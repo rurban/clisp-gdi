@@ -1,0 +1,5 @@
+fix b, bool
+add object arg
+fix function args in header, no commas
+handle wide-strings: GetICMProfileW
+finish unimplemented outputSTRUCT

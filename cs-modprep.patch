@@ -1,0 +1,61 @@
+difforig utils/modprep.lisp
+
+diff -u utils/modprep.lisp.orig utils/modprep.lisp
+--- utils/modprep.lisp.orig	2009-06-25 23:43:02.000000000 +0200
++++ utils/modprep.lisp	2009-07-12 21:23:01.156250000 +0200
+@@ -221,7 +221,7 @@
+ 
+ (defun endif-p (line) (eq :|endif| (decode-directive line)))
+ 
+-;; DEFMODULE(name,package)
++;; DEFMODULE(name,package,[package-properties])
+ (defvar *module-name*)
+ (defvar *module-line*)
+ (defvar *module-package*) 
+@@ -335,7 +335,8 @@
+   (find tag *objdefs* :test #'string= :key #'objdef-tag))
+ (defun write-string-c-style (string out)
+   (loop :for cc :across string :and ii :upfrom 0
+-    :do (cond ((alphanumericp cc) (write-char (char-downcase cc) out))
++    :do (cond ((alphanumericp cc) 
++               (write-char (if (case-sensitive-package-p) cc (char-downcase cc)) out))
+               ((char= cc #\:) (write-char (if (zerop ii) #\K #\_) out))
+               ((or (char= cc #\_) (char= cc #\-)) (write-char #\_ out))
+               (t (format out "_~2,'0x" (char-code cc))))))
+@@ -373,6 +374,9 @@
+ (defun case-sensitive-package-p ()
+   (let ((properties (gethash *module-package* *package-properties*)))
+     (or (getf properties :modern) (getf properties :case-sensitive))))
++(defun case-inverted-package-p ()
++  (let ((properties (gethash *module-package* *package-properties*)))
++    (or (getf properties :modern) (getf properties :case-inverted))))
+ 
+ (defun string-upcase-verbose (string)
+   (when (and (some #'lower-case-p string)    ; upcasing will modify
+@@ -597,8 +601,9 @@
+       (setq pack (string-upcase pack)))
+     (unless (every (lambda (c) (or (not (alpha-char-p c)) (upper-case-p c)))
+                    name)
+-      (warn "~S:~D: fixed function name case ~S" *input-file* *lineno* name)
+-      (setq name (string-upcase name)))
++      (when (not (case-sensitive-package-p))
++        (warn "~S:~D: fixed function name case ~S" *input-file* *lineno* name)
++        (setq name (string-upcase name))))
+     (pushnew pack *module-all-packages* :test #'string=)
+     (vector-push-extend fd *fundefs*)
+     fd))
+@@ -1171,9 +1176,13 @@
+             (format out "  subr_initdata_t _~A;" (fundef-tag fd))))
+     (formatln out "  int _dummy_to_avoid_trailing_comma_in_initializer;")
+     (formatln out "} ~A = {" subr-tab-initdata)
++    (if (case-inverted-package-p) 
++        (formatln out "/* case-inverted for modern, will be inverted again lisp-side */"))
+     (loop :for fd :across *fundefs*
+       :do (with-conditional (out (fundef-cond-stack fd))
+-            (format out "  { ~S, ~S }," (fundef-pack fd) (fundef-name fd))))
++            (format out "  { ~S, ~S }," (fundef-pack fd) 
++                    (if (case-inverted-package-p) (string-invertcase (fundef-name fd))
++                      (fundef-name fd)))))
+     (formatln out "  0")
+     (formatln out "};") (newline out)
+     ;; Emit the decl first, to avoid "gcc -missing-declarations" warnings.
