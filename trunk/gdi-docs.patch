@@ -1,0 +1,21 @@
+difforig doc/impnotes.xml.in
+
+diff -u doc/impnotes.xml.in.orig doc/impnotes.xml.in
+--- doc/impnotes.xml.in.orig	2009-06-25 23:41:26.390625000 +0200
++++ doc/impnotes.xml.in	2009-07-11 00:17:48.484375000 +0200
+@@ -27,6 +27,7 @@
+   <!ENTITY dirkey-file SYSTEM "../modules/dirkey/dirkey.xml">
+   <!ENTITY fastcgi-file SYSTEM "../modules/fastcgi/fastcgi.xml">
+   <!ENTITY gdbm-file SYSTEM "../modules/gdbm/gdbm.xml">
++  <!ENTITY gdi-file SYSTEM "../modules/gdi/gdi.xml">
+   <!ENTITY gtk-file SYSTEM "../modules/gtk2/gtk.xml">
+   <!ENTITY i18n-file SYSTEM "../modules/i18n/i18n.xml">
+   <!ENTITY libsvm-file SYSTEM "../modules/libsvm/svm.xml">
+@@ -205,6 +206,7 @@
+ 
+ <!-- gui -->
+ &gtk-file;
++&gdi-file;
+ 
+ </chapter>
+ 

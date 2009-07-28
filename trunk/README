@@ -1,0 +1,80 @@
+This module is a interface to gdi-modern, the lowest level
+ms windows graphics api. It is a work in progress,
+and is copyright Dan Stanger 2002.
+It is licensed under the LGPL and all rights assigned
+to the Free Software Foundation.
+There are many places to learn about the gdi.  The wine
+web site has some links to web sites about it.
+This was the first gdi program I ever wrote.
+
+This is the modern version of gdi, i.e. case-sensitive with proper caps.
+
+WARNING: DONT regenerate any code without
+thinking very carefully.  All the c files were hand edited,
+and you dont want to redo that.
+END WARNING
+
+All the C files were hand edited to use with_string_0
+instead of TheAsciz.
+
+Todo:
+
+Fix warnings.
+Fix modprep to enable -modern builds.
+Test existing code.
+Add more message handling code.
+Finish the process*, output* routines.
+Write more examples, and documentation.
+
+To install:
+move the gdi directory below your cygwin build directory
+for example
+/cygdrive/e/clisp-2.28/cygwin/gdi
+in gdi
+compile gdi.lisp with:
+clisp -q -c gdi.lisp
+make the object gdi.o
+make
+cd ..
+echo rm -rf gdi+base;./clisp-link add-module-set gdi . gdi+base
+cd gdi+base
+cp * /usr/local/lib/clisp/base
+
+now clisp should execute with the gdi module, and *features* should
+have gdi in it.
+
+Notes:
+Some functions which in c would return a struct return multiple values
+if it was more convenient to do so.  For example GetTextExtentPoint32
+would return a SIZE, but most of the time, the size will be used
+directly.  If this proves not to be the case, change it.
+
+Files:
+Makefile
+func.awk program to convert output of c preprocesser to clisp module code
+funcs-count.c functions <= 5 args
+funcs-count.h header file of functions <= 5 args
+funcs-ok.c functions that probably translated ok
+funcs-ok.h header file of functions that probably translated ok
+funcs-out.c functions that return data
+funcs-out.h header file of functions that return data
+funcs-prob.c functions that have been hand edited
+funcs-prob.h header file of functions that will require hand editing
+funcs-rest.c functions that have more than 5 parameters, has been hand edited
+funcs-rest.c-prev a previous version of the previous file
+funcs-rest.h header file of functions that have more than 5 parameters
+funcs-rest.sh script to create the funcs-rest.c
+gdi-preload.lisp used by module process
+gdi.lisp lisp code for module
+gdi.m c code that was written by hand
+input.awk code to help generate process* routines in local.c
+link.sh used by module process
+local.c mostly process and output routines.
+struct1.awk code to help generate process* routines in local.c
+struct2.awk code to help generate lisp structures
+struct3.awk code to help generate output* routines in local.c
+todo obsolete ??? todo list
+
+Maintainer note:
+Dan Stanger stopped writing at this code at end of 2003, and 
+Reini Urban took it over 2006.

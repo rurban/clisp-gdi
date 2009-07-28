@@ -1,0 +1,17 @@
+/*
+do we need a with a with-pen macro or a  with-dc macro?
+following the motifzone document
+we define a device-context structure (or should it be a class)
+we use functions which call the corresponding win32 function to
+manipulate the the device context.
+The gdi uses handles which is a 32 bit unsigned int.
+Since the most-positive-fixnum in clisp is 24 bits, the
+foreign-pointer is used (pointer to void).  All handles are
+this type.
+Since out parameters are passed as multiple values,
+adopt the convention that the return value is first,
+
+change of plan we use cparse to generate structure assignment
+code in c.  then call directly from c.
+ */
+
