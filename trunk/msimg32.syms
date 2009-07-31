@@ -1,0 +1,5 @@
+AlphaBlend
+GetDCBrushColor
+GetDCPenColor
+GradientFill
+TransparentBlt

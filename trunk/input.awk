@@ -2,8 +2,7 @@ function doIdent( type, name, arg) {
     if(type ~ /^H.*/) {
        return (name " = TheFpointer("arg")->fp_pointer;")
     }
-    else if( "DWORD" == type || "UINT" == type || "DWORD32" == type ||
-              "COLORREF" == type) {
+    else if( "DWORD" == type || "UINT" == type || "DWORD32" == type) {
        return (name " = I_to_uint32("arg");")
     }
     else if( "int" == type || "INT" == type || "LONG" == type || "LPARAM"==type){

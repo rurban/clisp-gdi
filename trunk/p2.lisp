@@ -1,17 +1,14 @@
-;(in-package :cs-cl-user)
+;(in-package :cs-user)
 (use-package "GDI")
 (defun f ()
-  (let* ((hwnd (multiple-value-bind (retval h)
-                  (GDI::CreateFontA (- (GDI::GetDeviceCaps hdc LOGPIXELSY))
-                                    0 0 0 GDI::FW_BOLD T NIL NIL GDI::ANSI_CHARSET
-                                    GDI::OUT_TT_PRECIS GDI::CLIP_DEFAULT_PRECIS
-                                    GDI::PROOF_QUALITY GDI::VARIABLE_PITCH
-                                    "Times New Roman")
-                  (if retval h (error "CreateFontA ~S" h))))
+  (let* ((hwnd (GDI::CreateFontA (- (GDI::GetDeviceCaps hdc LOGPIXELSY))
+                                 0 0 0 GDI::FW_BOLD T NIL NIL GDI::ANSI_CHARSET
+                                 GDI::OUT_TT_PRECIS GDI::CLIP_DEFAULT_PRECIS
+                                 GDI::PROOF_QUALITY GDI::VARIABLE_PITCH
+                                 "Times New Roman"))
          (x (/ (GDI::GetSystemMetrics GDI::SM_CXSCREEN) 2))
          (y (/ (GDI::GetSystemMetrics GDI::SM_CYSCREEN) 2))
-         (hold (multiple-value-bind (retval h) (GDI::SelectObject hdc hfont)
-                 (if retval h (error "GetDC ~S" h)))))
+         (hold (GDI::SelectObject hdc hfont)))
      (GDI::SetTextAlign hdc (logior GDI::TA_CENTER GDI::TA_BASELINE))
      (GDI::SetBkMode hdc GDI::TRANSPARENT)
      (GDI::SetTextColor hdc (GDI::make-rgb 0 0 #xff))
@@ -19,33 +16,28 @@
      (GDI::SelectObject hdc hold)
      (GDI::DeleteObject hfont)))
 
-(defun onDraw (hdc)
-     (GDI::TextOutA hdc 0 0 "HELLO WORLD" 11))
-
+(defun onDraw (hdc) (GDI::TextOutA hdc 0 0 "HELLO WORLD cb" 11))
 (defun onKeyDown (wparam lparam) (quit))
 
 (defun main ()
-  (GDI::add-callbacks GDI::WM_NCCREATE (list (cons GDI::WM_PAINT #'onDraw) 
-                                             (cons GDI::WM_KEYDOWN #'onKeyDown)))
-  (let* (
-         (cn "HelloWorld")
-         (wc (or (GDI::FindAtomA cn) (GDI::GlobalFindAtomA cn)
-                 (multiple-value-bind (retval h)
-                     (GDI::RegisterClassA
-                      (GDI::make-wndclass 0 0 0 GDI::*hinstance* NIL
-                                         (multiple-value-bind (retval h)
-                                             (GDI::LoadCursorA NIL (GDI::GetIDC GDI::IDC_ARROW))
-                                           (if retval h (error "LoadCursorA ~S" h)))
-                                         (multiple-value-bind (retval h) (GDI::GetStockObject GDI::WHITE_BRUSH)
-                                           (if retval h (error "GetStockObject ~S" h)))
-                                         NIL cn))
-                   (if retval h (error "RegisterClassA ~S" h)))))
-         (cr (GDI::make-createstruct 0 wc "Hello World"
-                                    GDI::WS_POPUP 0 0 (/ (GDI::GetSystemMetrics GDI::SM_CXSCREEN) 2)
-                                    (/ (GDI::GetSystemMetrics GDI::SM_CYSCREEN) 2)
-                                    NIL NIL GDI::*hinstance* NIL))
-         (win (multiple-value-bind (retval h) (GDI::CreateWindowIndirectA cr)
-                (if retval h (error "CreateWindowIndirectA ~S" h)))))
+  (GDI::add-callbacks GDI::WM_NCCREATE 
+                      (list (cons GDI::WM_PAINT #'onDraw)
+                            (cons GDI::WM_KEYDOWN #'onKeyDown)))
+  (let* ((cn "HelloWorld")
+         (wndclass 
+          (or (GDI::FindAtomA cn) 
+              (GDI::GlobalFindAtomA cn)
+              (GDI::RegisterClassA
+               (GDI::make-wndclass 0 0 0 GDI::*hinstance* NIL
+                                   (GDI::LoadCursorA NIL (GDI::GetIDC GDI::IDC_ARROW))
+                                   (GDI::GetStockObject GDI::WHITE_BRUSH)
+                                   NIL cn))))
+         (cr (GDI::make-createstruct 0 wndclass "HelloWorld"
+                                     GDI::WS_POPUP 0 0 
+                                     (/ (GDI::GetSystemMetrics GDI::SM_CXSCREEN) 2)
+                                     (/ (GDI::GetSystemMetrics GDI::SM_CYSCREEN) 2)
+                                     NIL NIL GDI::*hinstance* NIL))
+         (win (GDI::CreateWindowIndirectA cr)))
     (GDI::ShowWindow win GDI::SW_SHOWNORMAL)
     (GDI::UpdateWindow win)
     (GDI::MessageLoop)))

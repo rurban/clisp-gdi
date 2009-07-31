@@ -20,7 +20,8 @@
 
 <section id="gdi-struct"><title>Structs</title>
 <para>All data is kept on the &c-lang; side as much as possible, 
- there are no &clos; counterparts.</para>
+ there are no &clos; counterparts. Structs not listed are treated 
+ as opaque &foreign-pointer;.</para>
 <para>Struct names are uppercase matching the Windows struct name, 
  the constructor is lowercase with the <function>make-</function> prefix.</para>
 <variablelist>
@@ -141,22 +142,18 @@
   <subtitle>Argument types:</subtitle>
   <simpara><code>int DWORD WORD LONG UINT LPARAM</code> arguments are mapped to direct &integer-t; 
    types.</simpara> 
-  <simpara>All strings <code>(LPCSTR, LPCWSTR, ...)</code> are converted automatically to 
-   &foreign-pointer;.</simpara> 
-  <para><warning>Unsure about he struct types. To be verified!</warning>
+  <simpara>All strings are converted automativally from and to <code>(LPCSTR, LPCWSTR, ...)</code>, 
+  just some output args are kept as &foreign-pointer;.</simpara> 
    All handles <code>(ATOM, H*)</code> which are no explicitly handled structs from 
-   above must be &foreign-pointer; types. See the <code>process*</code> functions in local.c</para>
+  <simpara>above must be &foreign-pointer; types. See the <code>process*</code> functions in local.c</simpara>
   
-  <subtitle>Return values:</subtitle> 
-  <simpara><type>BOOL</type> GDI functions return on success just <constant>&t;</constant>, 
-   on failure <constant>&nil;</constant> as first value and <code>GetLastError</code> (&integer-t;)
-   as second value.</simpara>
-  <simpara><type>integer</type> GDI functions return on success &t; and the returned integer as second value, 
-   on failure also <constant>&nil;</constant> as first value and <code>GetLastError</code> (&integer-t;)
-   as second value.</simpara>
-  <simpara>The other functions returning a struct may return them as &foreign-pointer; in the 
-   second value, the first value is <constant>&t;</constant> on success, or as multiple values. 
-   The error behaviour is the same as above.</simpara>
+  <subtitle>Return values:</subtitle>
+  <simpara>Generally, on failure &nil; as first value and <code>GetLastError</code> (&integer-t;)
+   as second value is returned.</simpara>
+  <simpara><type>BOOL</type> GDI functions return on success just &t;.</simpara>
+  <simpara><type>integer</type> GDI functions return the returned integer.</simpara>
+  <simpara>The other functions returning a struct may return them as &foreign-pointer; or 
+   if listed above as struct.</simpara>
   <simpara>Some functions which in c would return a struct return multiple values
    if it was more convenient to do so.  For example <link linkend="GetTextExtentPoint32A">
    <code>GetTextExtentPoint32A</code></link> would return a <type>SIZE</type> as &foreign-pointer;, 
@@ -166,1094 +163,1094 @@
 <variablelist>
 <varlistentry id="AddFontResourceA"><term><code>(AddFontResourceA LPCSTR)</code></term>
   <para>See <term><ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AddFontResourceA">MSDN</ulink></term></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;. On failure <constant>&nil;</constant> and as second value the error code as &integer-t; is returned.</para></varlistentry>
+  <para>Returns a &integer-t;. On failure &nil; and as second value the error code as &integer-t; is returned.</para></varlistentry>
 <varlistentry id="AddFontResourceW"><term><code>(AddFontResourceW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AddFontResourceW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;. On failure <constant>&nil;</constant> and as second value the error code as &integer-t; is returned.</para></varlistentry>
+  <para>Returns a &integer-t;. On failure &nil; and as second value the error code as &integer-t; is returned.</para></varlistentry>
 <varlistentry id="AnimatePalette"><term><code>(AnimatePalette HPALETTE UINT UINT  PALETTEENTRY_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AnimatePalette">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ChoosePixelFormat"><term><code>(ChoosePixelFormat HDC   PIXELFORMATDESCRIPTOR_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ChoosePixelFormat">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="CreateBitmap"><term><code>(CreateBitmap int int UINT UINT PCVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateBitmap">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
 <varlistentry id="CreateDIBPatternBrushPt"><term><code>(CreateDIBPatternBrushPt PCVOID UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateDIBPatternBrushPt">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
 <varlistentry id="CreatePolyPolygonRgn"><term><code>(CreatePolyPolygonRgn  POINT_P  INT_P int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreatePolyPolygonRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="CreatePolygonRgn"><term><code>(CreatePolygonRgn  POINT_P int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreatePolygonRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="CreateScalableFontResourceA"><term><code>(CreateScalableFontResourceA DWORD LPCSTR LPCSTR LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateScalableFontResourceA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CreateScalableFontResourceW"><term><code>(CreateScalableFontResourceW DWORD LPCWSTR LPCWSTR LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateScalableFontResourceW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="DPtoLP"><term><code>(DPtoLP HDC LPPOINT int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DPtoLP">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="DescribePixelFormat"><term><code>(DescribePixelFormat HDC int UINT LPPIXELFORMATDESCRIPTOR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DescribePixelFormat">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="DrawEscape"><term><code>(DrawEscape HDC int int LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DrawEscape">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="ExtCreatePen"><term><code>(ExtCreatePen DWORD DWORD  LOGBRUSH_P DWORD  DWORD_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExtCreatePen">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HPEN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HPEN</type> structure.</para></varlistentry>
 <varlistentry id="ExtCreateRegion"><term><code>(ExtCreateRegion  XFORM_P DWORD  RGNDATA_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExtCreateRegion">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="FixBrushOrgEx"><term><code>(FixBrushOrgEx HDC int int LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FixBrushOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GdiComment"><term><code>(GdiComment HDC UINT  BYTE_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GdiComment">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GdiFlush"><term><code>(GdiFlush  )</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GdiFlush">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GdiGetBatchLimit"><term><code>(GdiGetBatchLimit  )</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GdiGetBatchLimit">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="LPtoDP"><term><code>(LPtoDP HDC LPPOINT int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=LPtoDP">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ModifyWorldTransform"><term><code>(ModifyWorldTransform HDC  XFORM_P DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ModifyWorldTransform">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="MoveToEx"><term><code>(MoveToEx HDC int int LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=MoveToEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="OffsetViewportOrgEx"><term><code>(OffsetViewportOrgEx HDC int int LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=OffsetViewportOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="OffsetWindowOrgEx"><term><code>(OffsetWindowOrgEx HDC int int LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=OffsetWindowOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PlayEnhMetaFileRecord"><term><code>(PlayEnhMetaFileRecord HDC LPHANDLETABLE  ENHMETARECORD_P UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PlayEnhMetaFileRecord">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PlayMetaFileRecord"><term><code>(PlayMetaFileRecord HDC LPHANDLETABLE LPMETARECORD UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PlayMetaFileRecord">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolyBezier"><term><code>(PolyBezier HDC  POINT_P DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolyBezier">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolyBezierTo"><term><code>(PolyBezierTo HDC  POINT_P DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolyBezierTo">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolyDraw"><term><code>(PolyDraw HDC  POINT_P  BYTE_P int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolyDraw">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolyPolygon"><term><code>(PolyPolygon HDC  POINT_P  INT_P int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolyPolygon">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolyPolyline"><term><code>(PolyPolyline HDC  POINT_P  DWORD_P DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolyPolyline">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolyTextOutA"><term><code>(PolyTextOutA HDC  POLYTEXTA_P int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolyTextOutA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolyTextOutW"><term><code>(PolyTextOutW HDC  POLYTEXTW_P int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolyTextOutW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="Polygon"><term><code>(Polygon HDC  POINT_P int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Polygon">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="Polyline"><term><code>(Polyline HDC  POINT_P int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Polyline">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PolylineTo"><term><code>(PolylineTo HDC  POINT_P DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PolylineTo">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetBitmapBits"><term><code>(SetBitmapBits HBITMAP DWORD PCVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetBitmapBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetBitmapDimensionEx"><term><code>(SetBitmapDimensionEx HBITMAP int int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetBitmapDimensionEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetBoundsRect"><term><code>(SetBoundsRect HDC LPCRECT UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetBoundsRect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetBrushOrgEx"><term><code>(SetBrushOrgEx HDC int int LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetBrushOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetDIBColorTable"><term><code>(SetDIBColorTable HDC UINT UINT  RGBQUAD_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetDIBColorTable">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetEnhMetaFileBits"><term><code>(SetEnhMetaFileBits UINT  BYTE_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetEnhMetaFileBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="SetMetaFileBitsEx"><term><code>(SetMetaFileBitsEx UINT  BYTE_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetMetaFileBitsEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="SetPaletteEntries"><term><code>(SetPaletteEntries HPALETTE UINT UINT  PALETTEENTRY_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetPaletteEntries">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetPixelFormat"><term><code>(SetPixelFormat HDC int PIXELFORMATDESCRIPTOR_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetPixelFormat">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetViewportExtEx"><term><code>(SetViewportExtEx HDC int int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetViewportExtEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetViewportOrgEx"><term><code>(SetViewportOrgEx HDC int int LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetViewportOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetWinMetaFileBits"><term><code>(SetWinMetaFileBits UINT  BYTE_P HDC  METAFILEPICT_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetWinMetaFileBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="SetWindowExtEx"><term><code>(SetWindowExtEx HDC int int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetWindowExtEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetWindowOrgEx"><term><code>(SetWindowOrgEx HDC int int LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetWindowOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="StartDocA"><term><code>(StartDocA HDC  DOCINFOA_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=StartDocA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="StartDocW"><term><code>(StartDocW HDC  DOCINFOW_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=StartDocW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="TextOutA"><term><code>(TextOutA HDC int int LPCSTR int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=TextOutA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="TextOutW"><term><code>(TextOutW HDC int int LPCWSTR int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=TextOutW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="UpdateICMRegKeyA"><term><code>(UpdateICMRegKeyA DWORD DWORD LPSTR UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=UpdateICMRegKeyA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="UpdateICMRegKeyW"><term><code>(UpdateICMRegKeyW DWORD DWORD LPWSTR UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=UpdateICMRegKeyW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="AbortDoc"><term><code>(AbortDoc HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AbortDoc">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="AbortPath"><term><code>(AbortPath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AbortPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="AddAtomA"><term><code>(AddAtomA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AddAtomA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="AddAtomW"><term><code>(AddAtomW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AddAtomW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="BeginPath"><term><code>(BeginPath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=BeginPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CancelDC"><term><code>(CancelDC HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CancelDC">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CloseEnhMetaFile"><term><code>(CloseEnhMetaFile HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CloseEnhMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="CloseFigure"><term><code>(CloseFigure HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CloseFigure">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CloseMetaFile"><term><code>(CloseMetaFile HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CloseMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="ColorMatchToTarget"><term><code>(ColorMatchToTarget HDC HDC DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ColorMatchToTarget">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CombineRgn"><term><code>(CombineRgn HRGN HRGN HRGN int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CombineRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="CreateCompatibleBitmap"><term><code>(CreateCompatibleBitmap HDC int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateCompatibleBitmap">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
 <varlistentry id="CreateCompatibleDC"><term><code>(CreateCompatibleDC HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateCompatibleDC">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateDIBPatternBrush"><term><code>(CreateDIBPatternBrush HGLOBAL UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateDIBPatternBrush">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
 <varlistentry id="CreateDiscardableBitmap"><term><code>(CreateDiscardableBitmap HDC int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateDiscardableBitmap">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
 <varlistentry id="CreateEllipticRgn"><term><code>(CreateEllipticRgn int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateEllipticRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="CreateHalftonePalette"><term><code>(CreateHalftonePalette HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateHalftonePalette">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HPALETTE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HPALETTE</type> structure.</para></varlistentry>
 <varlistentry id="CreateHatchBrush"><term><code>(CreateHatchBrush int COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateHatchBrush">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
 <varlistentry id="CreatePatternBrush"><term><code>(CreatePatternBrush HBITMAP)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreatePatternBrush">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
 <varlistentry id="CreatePen"><term><code>(CreatePen int int COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreatePen">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HPEN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HPEN</type> structure.</para></varlistentry>
 <varlistentry id="CreateRectRgn"><term><code>(CreateRectRgn int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateRectRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="CreateSolidBrush"><term><code>(CreateSolidBrush COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateSolidBrush">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
 <varlistentry id="DeleteColorSpace"><term><code>(DeleteColorSpace HCOLORSPACE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DeleteColorSpace">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="DeleteDC"><term><code>(DeleteDC HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DeleteDC">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="DeleteEnhMetaFile"><term><code>(DeleteEnhMetaFile HENHMETAFILE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DeleteEnhMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="DeleteMetaFile"><term><code>(DeleteMetaFile HMETAFILE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DeleteMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="DeleteObject"><term><code>(DeleteObject HGDIOBJ)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DeleteObject">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="Ellipse"><term><code>(Ellipse HDC int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Ellipse">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="EndDoc"><term><code>(EndDoc HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EndDoc">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EndPage"><term><code>(EndPage HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EndPage">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EndPath"><term><code>(EndPath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EndPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="EqualRgn"><term><code>(EqualRgn HRGN HRGN)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EqualRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="EscapeCommFunction"><term><code>(EscapeCommFunction HANDLE DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EscapeCommFunction">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ExcludeClipRect"><term><code>(ExcludeClipRect HDC int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExcludeClipRect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="ExtFloodFill"><term><code>(ExtFloodFill HDC int int COLORREF UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExtFloodFill">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ExtSelectClipRgn"><term><code>(ExtSelectClipRgn HDC HRGN int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExtSelectClipRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="FillPath"><term><code>(FillPath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FillPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="FillRgn"><term><code>(FillRgn HDC HRGN HBRUSH)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FillRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="FindAtomA"><term><code>(FindAtomA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FindAtomA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="FindAtomW"><term><code>(FindAtomW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FindAtomW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="FlattenPath"><term><code>(FlattenPath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FlattenPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="FloodFill"><term><code>(FloodFill HDC int int COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FloodFill">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="FrameRgn"><term><code>(FrameRgn HDC HRGN HBRUSH int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FrameRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GdiSetBatchLimit"><term><code>(GdiSetBatchLimit DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GdiSetBatchLimit">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetArcDirection"><term><code>(GetArcDirection HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetArcDirection">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetBkColor"><term><code>(GetBkColor HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetBkColor">MSDN</ulink></para>
-   <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
+   <para>Returns a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
 <varlistentry id="GetBkMode"><term><code>(GetBkMode HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetBkMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetClipRgn"><term><code>(GetClipRgn HDC HRGN)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetClipRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetColorSpace"><term><code>(GetColorSpace HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetColorSpace">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HANDLE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HANDLE</type> structure.</para></varlistentry>
 <varlistentry id="GetCurrentObject"><term><code>(GetCurrentObject HDC UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCurrentObject">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HGDIOBJ</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HGDIOBJ</type> structure.</para></varlistentry>
 <varlistentry id="GetFontLanguageInfo"><term><code>(GetFontLanguageInfo HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetFontLanguageInfo">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetGraphicsMode"><term><code>(GetGraphicsMode HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetGraphicsMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetMapMode"><term><code>(GetMapMode HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetMapMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetMetaRgn"><term><code>(GetMetaRgn HDC HRGN)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetMetaRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetNearestColor"><term><code>(GetNearestColor HDC COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetNearestColor">MSDN</ulink></para>
-   <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
+   <para>Returns a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
 <varlistentry id="GetNearestPaletteIndex"><term><code>(GetNearestPaletteIndex HPALETTE COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetNearestPaletteIndex">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetObjectType"><term><code>(GetObjectType HGDIOBJ)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetObjectType">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetPixel"><term><code>(GetPixel HDC int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetPixel">MSDN</ulink></para>
-   <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
+   <para>Returns a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
 <varlistentry id="GetPixelFormat"><term><code>(GetPixelFormat HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetPixelFormat">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetPolyFillMode"><term><code>(GetPolyFillMode HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetPolyFillMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetROP2"><term><code>(GetROP2 HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetROP2">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetStockObject"><term><code>(GetStockObject int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetStockObject">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HGDIOBJ</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HGDIOBJ</type> structure.</para></varlistentry>
 <varlistentry id="GetStretchBltMode"><term><code>(GetStretchBltMode HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetStretchBltMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetSystemPaletteUse"><term><code>(GetSystemPaletteUse HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetSystemPaletteUse">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextAlign"><term><code>(GetTextAlign HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextAlign">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextCharacterExtra"><term><code>(GetTextCharacterExtra HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextCharacterExtra">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextCharset"><term><code>(GetTextCharset HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextCharset">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextColor"><term><code>(GetTextColor HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextColor">MSDN</ulink></para>
-   <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
+   <para>Returns a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
 <varlistentry id="GlobalAddAtomA"><term><code>(GlobalAddAtomA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GlobalAddAtomA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="GlobalAddAtomW"><term><code>(GlobalAddAtomW  LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GlobalAddAtomW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="GlobalFindAtomA"><term><code>(GlobalFindAtomA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GlobalFindAtomA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="GlobalFindAtomW"><term><code>(GlobalFindAtomW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GlobalFindAtomW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="IntersectClipRect"><term><code>(IntersectClipRect HDC int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=IntersectClipRect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="InvertRgn"><term><code>(InvertRgn HDC HRGN)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=InvertRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="LineTo"><term><code>(LineTo HDC int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=LineTo">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="LoadCursorFromFileA"><term><code>(LoadCursorFromFileA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=LoadCursorFromFileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
 <varlistentry id="LoadCursorFromFileW"><term><code>(LoadCursorFromFileW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=LoadCursorFromFileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
 <varlistentry id="OffsetClipRgn"><term><code>(OffsetClipRgn HDC int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=OffsetClipRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="OffsetRgn"><term><code>(OffsetRgn HRGN int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=OffsetRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="PaintRgn"><term><code>(PaintRgn HDC HRGN)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PaintRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PathToRegion"><term><code>(PathToRegion HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PathToRegion">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="PlayMetaFile"><term><code>(PlayMetaFile HDC HMETAFILE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PlayMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PtInRegion"><term><code>(PtInRegion HRGN int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PtInRegion">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PtVisible"><term><code>(PtVisible HDC int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PtVisible">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="RealizePalette"><term><code>(RealizePalette HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RealizePalette">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="Rectangle"><term><code>(Rectangle HDC int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Rectangle">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ResizePalette"><term><code>(ResizePalette HPALETTE UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ResizePalette">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="RestoreDC"><term><code>(RestoreDC HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RestoreDC">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SaveDC"><term><code>(SaveDC HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SaveDC">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SelectClipPath"><term><code>(SelectClipPath HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SelectClipPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SelectClipRgn"><term><code>(SelectClipRgn HDC HRGN)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SelectClipRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SelectObject"><term><code>(SelectObject HDC HGDIOBJ)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SelectObject">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HGDIOBJ</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HGDIOBJ</type> structure.</para></varlistentry>
 <varlistentry id="SetArcDirection"><term><code>(SetArcDirection HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetArcDirection">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetBkColor"><term><code>(SetBkColor HDC COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetBkColor">MSDN</ulink></para>
-   <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
+   <para>Returns a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
 <varlistentry id="SetBkMode"><term><code>(SetBkMode HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetBkMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetColorSpace"><term><code>(SetColorSpace HDC HCOLORSPACE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetColorSpace">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetGraphicsMode"><term><code>(SetGraphicsMode HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetGraphicsMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetICMMode"><term><code>(SetICMMode HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetICMMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetMapMode"><term><code>(SetMapMode HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetMapMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetMapperFlags"><term><code>(SetMapperFlags HDC DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetMapperFlags">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetMetaRgn"><term><code>(SetMetaRgn HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetMetaRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetPolyFillMode"><term><code>(SetPolyFillMode HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetPolyFillMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetROP2"><term><code>(SetROP2 HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetROP2">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetRectRgn"><term><code>(SetRectRgn HRGN int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetRectRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetStretchBltMode"><term><code>(SetStretchBltMode HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetStretchBltMode">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetSystemPaletteUse"><term><code>(SetSystemPaletteUse HDC UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetSystemPaletteUse">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetTextAlign"><term><code>(SetTextAlign HDC UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetTextAlign">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetTextCharacterExtra"><term><code>(SetTextCharacterExtra HDC int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetTextCharacterExtra">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetTextJustification"><term><code>(SetTextJustification HDC int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetTextJustification">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ShowWindow"><term><code>(ShowWindow HWND int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ShowWindow">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ShowWindowAsync"><term><code>(ShowWindowAsync HWND int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ShowWindowAsync">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="StartPage"><term><code>(StartPage HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=StartPage">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="StrokeAndFillPath"><term><code>(StrokeAndFillPath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=StrokeAndFillPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="StrokePath"><term><code>(StrokePath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=StrokePath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SwapBuffers"><term><code>(SwapBuffers HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SwapBuffers">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="UnrealizeObject"><term><code>(UnrealizeObject HGDIOBJ)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=UnrealizeObject">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="UpdateColors"><term><code>(UpdateColors HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=UpdateColors">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="UpdateWindow"><term><code>(UpdateWindow HWND)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=UpdateWindow">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="WidenPath"><term><code>(WidenPath HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=WidenPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CheckColorsInGamut"><term><code>(CheckColorsInGamut HDC PVOID PVOID DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CheckColorsInGamut">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CombineTransform"><term><code>(CombineTransform LPXFORM  XFORM_P  XFORM_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CombineTransform">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CreateDIBSection"><term><code>(CreateDIBSection HDC  BITMAPINFO_P UINT HANDLE DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateDIBSection">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
 <varlistentry id="EnumEnhMetaFile"><term><code>(EnumEnhMetaFile HDC HENHMETAFILE ENHMFENUMPROC PVOID LPCRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumEnhMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="EnumFontFamiliesA"><term><code>(EnumFontFamiliesA HDC LPCSTR FONTENUMPROCA LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumFontFamiliesA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumFontFamiliesExA"><term><code>(EnumFontFamiliesExA HDC PLOGFONTA FONTENUMPROCA LPARAM DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumFontFamiliesExA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumFontFamiliesExW"><term><code>(EnumFontFamiliesExW HDC PLOGFONTW FONTENUMPROCW LPARAM DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumFontFamiliesExW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumFontFamiliesW"><term><code>(EnumFontFamiliesW HDC LPCWSTR FONTENUMPROCW LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumFontFamiliesW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumFontsA"><term><code>(EnumFontsA HDC LPCSTR FONTENUMPROCA LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumFontsA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumFontsW"><term><code>(EnumFontsW HDC LPCWSTR FONTENUMPROCA LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumFontsW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumICMProfilesA"><term><code>(EnumICMProfilesA HDC ICMENUMPROCA LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumICMProfilesA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumICMProfilesW"><term><code>(EnumICMProfilesW HDC ICMENUMPROCW LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumICMProfilesW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="EnumMetaFile"><term><code>(EnumMetaFile HDC HMETAFILE MFENUMPROC LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="EnumObjects"><term><code>(EnumObjects HDC int GOBJENUMPROC LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=EnumObjects">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetAspectRatioFilterEx"><term><code>(GetAspectRatioFilterEx HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetAspectRatioFilterEx">MSDN</ulink></para>
-  <para>Returns a SIZE struct or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns a SIZE struct or &nil;.</para></varlistentry>
 <varlistentry id="GetBitmapBits"><term><code>(GetBitmapBits HBITMAP LONG PVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetBitmapBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetBitmapDimensionEx"><term><code>(GetBitmapDimensionEx HBITMAP LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetBitmapDimensionEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetBoundsRect"><term><code>(GetBoundsRect HDC LPRECT UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetBoundsRect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetBrushOrgEx"><term><code>(GetBrushOrgEx HDC LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetBrushOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharABCWidthsA"><term><code>(GetCharABCWidthsA HDC UINT UINT LPABC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharABCWidthsA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharABCWidthsFloatA"><term><code>(GetCharABCWidthsFloatA HDC UINT UINT LPABCFLOAT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharABCWidthsFloatA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharABCWidthsFloatW"><term><code>(GetCharABCWidthsFloatW HDC UINT UINT LPABCFLOAT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharABCWidthsFloatW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharABCWidthsW"><term><code>(GetCharABCWidthsW HDC UINT UINT LPABC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharABCWidthsW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharWidth32A"><term><code>(GetCharWidth32A HDC UINT UINT LPINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharWidth32A">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharWidth32W"><term><code>(GetCharWidth32W HDC UINT UINT LPINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharWidth32W">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharWidthA"><term><code>(GetCharWidthA HDC UINT UINT LPINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharWidthA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharWidthW"><term><code>(GetCharWidthW HDC UINT UINT LPINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharWidthW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetClientRect"><term><code>(GetClientRect HWND LPRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetClientRect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetClipBox"><term><code>(GetClipBox HDC LPRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetClipBox">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetColorAdjustment"><term><code>(GetColorAdjustment HDC LPCOLORADJUSTMENT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetColorAdjustment">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCurrentPositionEx"><term><code>(GetCurrentPositionEx HDC LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCurrentPositionEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetDCOrgEx"><term><code>(GetDCOrgEx HDC LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDCOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetDIBColorTable"><term><code>(GetDIBColorTable HDC UINT UINT RGBQUAD_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDIBColorTable">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetDeviceGammaRamp"><term><code>(GetDeviceGammaRamp HDC PVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDeviceGammaRamp">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetEnhMetaFileA"><term><code>(GetEnhMetaFileA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetEnhMetaFileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="GetEnhMetaFileDescriptionA"><term><code>(GetEnhMetaFileDescriptionA HENHMETAFILE UINT LPSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetEnhMetaFileDescriptionA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetEnhMetaFileDescriptionW"><term><code>(GetEnhMetaFileDescriptionW HENHMETAFILE UINT LPWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetEnhMetaFileDescriptionW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetEnhMetaFileHeader"><term><code>(GetEnhMetaFileHeader HENHMETAFILE UINT LPENHMETAHEADER)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetEnhMetaFileHeader">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetEnhMetaFilePaletteEntries"><term><code>(GetEnhMetaFilePaletteEntries HENHMETAFILE UINT LPPALETTEENTRY)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetEnhMetaFilePaletteEntries">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetEnhMetaFilePixelFormat"><term><code>(GetEnhMetaFilePixelFormat HENHMETAFILE DWORD PIXELFORMATDESCRIPTOR_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetEnhMetaFilePixelFormat">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetEnhMetaFileW"><term><code>(GetEnhMetaFileW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetEnhMetaFileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="GetFontData"><term><code>(GetFontData HDC DWORD DWORD PVOID DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetFontData">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetICMProfileA"><term><code>(GetICMProfileA HDC LPDWORD LPSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetICMProfileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> , the value of LPDWORD as &integer-t; and the value LPWSTR as &string-t;, or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; , the value of LPDWORD as &integer-t; and the value LPWSTR as &string-t;, or &nil;.</para></varlistentry>
 <varlistentry id="GetICMProfileW"><term><code>(GetICMProfileW HDC LPDWORD LPWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetICMProfileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> , the value of LPDWORD as &integer-t; and the value LPWSTR as &string-t;, or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; , the value of LPDWORD as &integer-t; and the value LPWSTR as &string-t;, or &nil;.</para></varlistentry>
 <varlistentry id="GetKerningPairsA"><term><code>(GetKerningPairsA HDC DWORD LPKERNINGPAIR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetKerningPairsA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetKerningPairsW"><term><code>(GetKerningPairsW HDC DWORD LPKERNINGPAIR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetKerningPairsW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetLogColorSpaceA"><term><code>(GetLogColorSpaceA HCOLORSPACE LPLOGCOLORSPACEA DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetLogColorSpaceA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetLogColorSpaceW"><term><code>(GetLogColorSpaceW HCOLORSPACE LPLOGCOLORSPACEW DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetLogColorSpaceW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetMetaFileA"><term><code>(GetMetaFileA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetMetaFileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="GetMetaFileBitsEx"><term><code>(GetMetaFileBitsEx HMETAFILE UINT PVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetMetaFileBitsEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetMetaFileW"><term><code>(GetMetaFileW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetMetaFileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="GetObjectA"><term><code>(GetObjectA HGDIOBJ int PVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetObjectA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetObjectW"><term><code>(GetObjectW HGDIOBJ int PVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetObjectW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetOutlineTextMetricsA"><term><code>(GetOutlineTextMetricsA HDC UINT LPOUTLINETEXTMETRICA)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetOutlineTextMetricsA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetOutlineTextMetricsW"><term><code>(GetOutlineTextMetricsW HDC UINT LPOUTLINETEXTMETRICW)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetOutlineTextMetricsW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetPaletteEntries"><term><code>(GetPaletteEntries HPALETTE UINT UINT LPPALETTEENTRY)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetPaletteEntries">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetPath"><term><code>(GetPath HDC LPPOINT PBYTE int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetPath">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetRasterizerCaps"><term><code>(GetRasterizerCaps LPRASTERIZER_STATUS UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetRasterizerCaps">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetRegionData"><term><code>(GetRegionData HRGN DWORD LPRGNDATA)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetRegionData">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetRgnBox"><term><code>(GetRgnBox HRGN LPRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetRgnBox">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetSystemPaletteEntries"><term><code>(GetSystemPaletteEntries HDC UINT UINT LPPALETTEENTRY)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetSystemPaletteEntries">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextCharsetInfo"><term><code>(GetTextCharsetInfo HDC LPFONTSIGNATURE DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextCharsetInfo">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextExtentPoint32A"><term><code>(GetTextExtentPoint32A HDC LPCSTR int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextExtentPoint32A">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetTextExtentPoint32W"><term><code>(GetTextExtentPoint32W  HDC LPCWSTR int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextExtentPoint32W">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetTextExtentPointA"><term><code>(GetTextExtentPointA HDC LPCSTR int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextExtentPointA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetTextExtentPointW"><term><code>(GetTextExtentPointW HDC LPCWSTR int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextExtentPointW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetTextFaceA"><term><code>(GetTextFaceA HDC int LPSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextFaceA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextFaceW"><term><code>(GetTextFaceW HDC int LPWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextFaceW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextMetricsA"><term><code>(GetTextMetricsA HDC LPTEXTMETRICA)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextMetricsA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetTextMetricsW"><term><code>(GetTextMetricsW HDC LPTEXTMETRICW)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextMetricsW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetViewportExtEx"><term><code>(GetViewportExtEx HDC LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetViewportExtEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetViewportOrgEx"><term><code>(GetViewportOrgEx HDC LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetViewportOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetWinMetaFileBits"><term><code>(GetWinMetaFileBits HENHMETAFILE UINT LPBYTE INT HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetWinMetaFileBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetWindowExtEx"><term><code>(GetWindowExtEx HDC LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetWindowExtEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetWindowOrgEx"><term><code>(GetWindowOrgEx HDC LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetWindowOrgEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetWorldTransform"><term><code>(GetWorldTransform HDC LPXFORM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetWorldTransform">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="Escape"><term><code>(Escape HDC int int LPCSTR PVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Escape">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetAbortProc"><term><code>(SetAbortProc HDC ABORTPROC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetAbortProc">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetCharWidthFloatA"><term><code>(GetCharWidthFloatA HDC UINT UINT PFLOAT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharWidthFloatA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetCharWidthFloatW"><term><code>(GetCharWidthFloatW HDC UINT UINT PFLOAT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharWidthFloatW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetMiterLimit"><term><code>(GetMiterLimit HDC PFLOAT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetMiterLimit">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetMiterLimit"><term><code>(SetMiterLimit HDC FLOAT PFLOAT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetMiterLimit">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="LineDDA"><term><code>(LineDDA LPPOINT LPPOINT LINEDDAPROC LPARAM)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=LineDDA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="TranslateCharsetInfo"><term><code>(TranslateCharsetInfo DWORD_P LPCHARSETINFO DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=TranslateCharsetInfo">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CopyEnhMetaFileA"><term><code>(CopyEnhMetaFileA HENHMETAFILE LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CopyEnhMetaFileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="CopyEnhMetaFileW"><term><code>(CopyEnhMetaFileW HENHMETAFILE LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CopyEnhMetaFileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HENHMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="CopyMetaFileA"><term><code>(CopyMetaFileA HMETAFILE LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CopyMetaFileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="CopyMetaFileW"><term><code>(CopyMetaFileW HMETAFILE LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CopyMetaFileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HMETAFILE</type> structure.</para></varlistentry>
 <varlistentry id="CreateBitmapIndirect"><term><code>(CreateBitmapIndirect  BITMAP_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateBitmapIndirect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
 <varlistentry id="CreateBrushIndirect"><term><code>(CreateBrushIndirect  LOGBRUSH_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateBrushIndirect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBRUSH</type> structure.</para></varlistentry>
 <varlistentry id="CreateColorSpaceA"><term><code>(CreateColorSpaceA LPLOGCOLORSPACEA)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateColorSpaceA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HCOLORSPACE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HCOLORSPACE</type> structure.</para></varlistentry>
 <varlistentry id="CreateColorSpaceW"><term><code>(CreateColorSpaceW LPLOGCOLORSPACEW)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateColorSpaceW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HCOLORSPACE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HCOLORSPACE</type> structure.</para></varlistentry>
 <varlistentry id="CreateDCA"><term><code>(CreateDCA LPCSTR LPCSTR LPCSTR  DEVMODEA_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateDCA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateDCW"><term><code>(CreateDCW LPCWSTR LPCWSTR LPCWSTR  DEVMODEW_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateDCW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateEllipticRgnIndirect"><term><code>(CreateEllipticRgnIndirect LPCRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateEllipticRgnIndirect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="CreateEnhMetaFileA"><term><code>(CreateEnhMetaFileA HDC LPCSTR LPCRECT LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateEnhMetaFileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateEnhMetaFileW"><term><code>(CreateEnhMetaFileW HDC LPCWSTR LPCRECT LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateEnhMetaFileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateFontIndirectA"><term><code>(CreateFontIndirectA  LOGFONTA_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateFontIndirectA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
 <varlistentry id="CreateFontIndirectW"><term><code>(CreateFontIndirectW  LOGFONTW_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateFontIndirectW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
 <varlistentry id="CreateICA"><term><code>(CreateICA LPCSTR LPCSTR LPCSTR  DEVMODEA_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateICA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateICW"><term><code>(CreateICW LPCWSTR LPCWSTR LPCWSTR  DEVMODEW_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateICW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateIconFromResource"><term><code>(CreateIconFromResource PBYTE DWORD BOOL DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateIconFromResource">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
 <varlistentry id="CreateIconIndirect"><term><code>(CreateIconIndirect PICONINFO)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateIconIndirect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
 <varlistentry id="CreateMetaFileA"><term><code>(CreateMetaFileA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateMetaFileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreateMetaFileW"><term><code>(CreateMetaFileW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateMetaFileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="CreatePalette"><term><code>(CreatePalette  LOGPALETTE_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreatePalette">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HPALETTE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HPALETTE</type> structure.</para></varlistentry>
 <varlistentry id="CreatePenIndirect"><term><code>(CreatePenIndirect  LOGPEN_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreatePenIndirect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HPEN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HPEN</type> structure.</para></varlistentry>
 <varlistentry id="CreateRectRgnIndirect"><term><code>(CreateRectRgnIndirect LPCRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateRectRgnIndirect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="FillRect"><term><code>(FillRect HDC LPCRECT HBRUSH)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FillRect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 
 <varlistentry id="GetDC"><term><code>(GetDC HWND)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDC">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="GetDeviceCaps"><term><code>(GetDeviceCaps HDC int)</code></term>
   <para>Retrieve device-specific information for the specified device. The return value specifies the value of the desired item. See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDeviceCaps">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetSystemMetrics"><term><code>(GetSystemMetrics int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetSystemMetrics">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 
 <varlistentry id="LoadCursorA"><term><code>(LoadCursorA HINSTANCE LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=LoadCursorA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
 <varlistentry id="LoadCursorW"><term><code>(LoadCursorW HINSTANCE LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=LoadCursorW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HCURSOR</type> structure.</para></varlistentry>
 <varlistentry id="PlayEnhMetaFile"><term><code>(PlayEnhMetaFile HDC HENHMETAFILE LPCRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PlayEnhMetaFile">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="RectInRegion"><term><code>(RectInRegion HRGN LPCRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RectInRegion">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="RectVisible"><term><code>(RectVisible HDC LPCRECT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RectVisible">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="RegisterClassA"><term><code>(RegisterClassA WNDCLASSA_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RegisterClassA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="RegisterClassW"><term><code>(RegisterClassW WNDCLASSW_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RegisterClassW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>ATOM</type> structure.</para></varlistentry>
 <varlistentry id="RemoveFontResourceA"><term><code>(RemoveFontResourceA LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RemoveFontResourceA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="RemoveFontResourceW"><term><code>(RemoveFontResourceW LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RemoveFontResourceW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ResetDCA"><term><code>(ResetDCA HDC  DEVMODEA_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ResetDCA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="ResetDCW"><term><code>(ResetDCW HDC  DEVMODEW_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ResetDCW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> structure.</para></varlistentry>
 <varlistentry id="SelectPalette"><term><code>(SelectPalette HDC HPALETTE BOOL)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SelectPalette">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HPALETTE</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HPALETTE</type> structure.</para></varlistentry>
 <varlistentry id="SetColorAdjustment"><term><code>(SetColorAdjustment HDC  COLORADJUSTMENT_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetColorAdjustment">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetDeviceGammaRamp"><term><code>(SetDeviceGammaRamp HDC PVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetDeviceGammaRamp">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetICMProfileA"><term><code>(SetICMProfileA HDC LPSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetICMProfileA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetICMProfileW"><term><code>(SetICMProfileW HDC LPWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetICMProfileW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetPixel"><term><code>(SetPixel HDC int int COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetPixel">MSDN</ulink></para>
-   <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
+   <para>Returns a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
 <varlistentry id="SetPixelV"><term><code>(SetPixelV HDC int int COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetPixelV">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetTextColor"><term><code>(SetTextColor HDC COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetTextColor">MSDN</ulink></para>
-   <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
+   <para>Returns a &foreign-pointer; to the <type>COLORREF</type> structure.</para></varlistentry>
 <varlistentry id="SetWorldTransform"><term><code>(SetWorldTransform HDC  XFORM_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetWorldTransform">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="AngleArc"><term><code>(AngleArc HDC int int DWORD FLOAT FLOAT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=AngleArc">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="Arc"><term><code>(Arc HDC int int int int int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Arc">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ArcTo"><term><code>(ArcTo HDC int int int int int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ArcTo">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="BitBlt"><term><code>(BitBlt HDC int int int int HDC int int DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=BitBlt">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="Chord"><term><code>(Chord HDC int int int int int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Chord">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="CreateDIBitmap"><term><code>(CreateDIBitmap HDC  BITMAPINFOHEADER_P DWORD PCVOID  BITMAPINFO_P UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateDIBitmap">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HBITMAP</type> structure.</para></varlistentry>
 <varlistentry id="CreateFontA"><term><code>(CreateFontA int int int int int DWORD DWORD DWORD DWORD DWORD DWORD DWORD DWORD LPCSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateFontA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
 <varlistentry id="CreateFontW"><term><code>(CreateFontW int int int int int DWORD DWORD DWORD DWORD DWORD DWORD DWORD DWORD LPCWSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateFontW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HFONT</type> structure.</para></varlistentry>
 <varlistentry id="CreateIcon"><term><code>(CreateIcon HINSTANCE int int BYTE BYTE PBYTE PBYTE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateIcon">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
 <varlistentry id="CreateIconFromResourceEx"><term><code>(CreateIconFromResourceEx PBYTE DWORD BOOL DWORD int int UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateIconFromResourceEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HICON</type> structure.</para></varlistentry>
 <varlistentry id="CreateRoundRectRgn"><term><code>(CreateRoundRectRgn int int int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateRoundRectRgn">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HRGN</type> structure.</para></varlistentry>
 <varlistentry id="CreateWindowExA"><term><code>(CreateWindowExA DWORD LPCSTR LPCSTR DWORD int int int int HWND HMENU HINSTANCE LPVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateWindowExA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HWND</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HWND</type> structure.</para></varlistentry>
 <varlistentry id="CreateWindowExW"><term><code>(CreateWindowExW DWORD LPCWSTR LPCWSTR DWORD int int int int HWND HMENU HINSTANCE LPVOID)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=CreateWindowExW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HWND</type> structure.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HWND</type> structure.</para></varlistentry>
 <varlistentry id="ExtEscape"><term><code>(ExtEscape HDC int int LPCSTR int LPSTR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExtEscape">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="ExtTextOutA"><term><code>(ExtTextOutA HDC int int UINT LPCRECT LPCSTR UINT PINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExtTextOutA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ExtTextOutW"><term><code>(ExtTextOutW HDC int int UINT LPCRECT LPCWSTR UINT PINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ExtTextOutW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="FindFirstFileExA"><term><code>(FindFirstFileExA LPCSTR FINDEX_INFO_LEVELS PVOID FINDEX_SEARCH_OPS PVOID DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FindFirstFileExA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HANDLE</type>.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HANDLE</type>.</para></varlistentry>
 <varlistentry id="FindFirstFileExW"><term><code>(FindFirstFileExW LPCWSTR FINDEX_INFO_LEVELS PVOID FINDEX_SEARCH_OPS PVOID DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=FindFirstFileExW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HANDLE</type>.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HANDLE</type>.</para></varlistentry>
 <varlistentry id="GetCharacterPlacementA"><term><code>(GetCharacterPlacementA HDC LPCSTR int int LPGCP_RESULTSA DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharacterPlacementA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetCharacterPlacementW"><term><code>(GetCharacterPlacementW HDC LPCWSTR int int LPGCP_RESULTSW DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCharacterPlacementW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetDIBits"><term><code>(GetDIBits HDC HBITMAP UINT UINT PVOID LPBITMAPINFO UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDIBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetGlyphOutlineA"><term><code>(GetGlyphOutlineA HDC UINT UINT LPGLYPHMETRICS DWORD PVOID PMAT2)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetGlyphOutlineA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetGlyphOutlineW"><term><code>(GetGlyphOutlineW HDC UINT UINT LPGLYPHMETRICS DWORD PVOID PMAT2)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetGlyphOutlineW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="GetTextExtentExPointA"><term><code>(GetTextExtentExPointA HDC LPCSTR int int LPINT LPINT LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextExtentExPointA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="GetTextExtentExPointW"><term><code>(GetTextExtentExPointW  HDC LPCWSTR int int LPINT LPINT LPSIZE )</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetTextExtentExPointW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="MaskBlt"><term><code>(MaskBlt HDC int int int int HDC int int HBITMAP int int DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=MaskBlt">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PatBlt"><term><code>(PatBlt HDC int int int int DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PatBlt">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="Pie"><term><code>(Pie HDC int int int int int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=Pie">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="PlgBlt"><term><code>(PlgBlt HDC PPOINT HDC int int int int HBITMAP int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=PlgBlt">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="RoundRect"><term><code>(RoundRect HDC int int int int int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=RoundRect">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ScaleViewportExtEx"><term><code>(ScaleViewportExtEx HDC int int int int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ScaleViewportExtEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="ScaleWindowExtEx"><term><code>(ScaleWindowExtEx HDC int int int int LPSIZE)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ScaleWindowExtEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetDIBits"><term><code>(SetDIBits HDC HBITMAP UINT UINT PCVOID PBITMAPINFO UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetDIBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SetDIBitsToDevice"><term><code>(SetDIBitsToDevice HDC int int DWORD DWORD int int UINT UINT PCVOID PBITMAPINFO UINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetDIBitsToDevice">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="StretchBlt"><term><code>(StretchBlt HDC int int int int HDC int int int int DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=StretchBlt">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="StretchDIBits"><term><code>(StretchDIBits HDC int int int int int int int int PVOID PBITMAPINFO UINT DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=StretchDIBits">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="TabbedTextOutA"><term><code>(TabbedTextOutA HDC int int LPCSTR int int LPINT int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=TabbedTextOutA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="TabbedTextOutW"><term><code>(TabbedTextOutW HDC int int LPCWSTR int int LPINT int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=TabbedTextOutW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SearchPathA"><term><code>(SearchPathA LPCSTR LPCSTR LPCSTR DWORD LPSTR LPSTR_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SearchPathA">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="SearchPathW"><term><code>(SearchPathW LPCWSTR LPCWSTR LPCWSTR DWORD LPWSTR LPWSTR_P)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SearchPathW">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &integer-t;.</para></varlistentry>
+  <para>Returns a &integer-t;.</para></varlistentry>
 <varlistentry id="DestroyCursor"><term><code>(DestroyCursor HCURSOR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=DestroyCursor">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> or <constant>&nil;</constant>.</para></varlistentry>
+  <para>Returns &t; or &nil;.</para></varlistentry>
 <varlistentry id="SetCursor"><term><code>(SetCursor HCURSOR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetCursor">MSDN</ulink></para>
   <para>Draws the specified <type>HCURSOR</type>. Returns the
   handle of the previously displayed cursor. Note that the cursor will
   change back to the default one as soon as the mouse moves or a system
   command is performed. To change the cursor persistantly, use <link linkend="ChangeCursor"><function role="win32">ChangeCursor</function></link>.</para>
-  <para>Returns <constant>&t;</constant> and a foreign pointer to the <type>HCURSOR</type> structure.</para></varlistentry>
+  <para>Returns a foreign pointer to the <type>HCURSOR</type> structure.</para></varlistentry>
 <varlistentry id="GetCursor"><term><code>(GetCursor)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCursor">MSDN</ulink></para>
-  <para>Returns the handle of the current cursor. Returns <constant>&t;</constant> and a foreign pointer to the <type>HCURSOR</type> structure.</para></varlistentry>
+  <para>Returns the handle of the current cursor. Returns a foreign pointer to the <type>HCURSOR</type> structure.</para></varlistentry>
 <varlistentry id="ChangeCursor"><term><code>(ChangeCursor HWND HCURSOR)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=ChangeCursor">MSDN</ulink></para>
-  <para>Changes the default cursor for a window to <type>CURSOR</type>. Returns <constant>&t;</constant> and a foreign pointer to the previous <type>HCURSOR</type></para></varlistentry>
+  <para>Changes the default cursor for a window to <type>CURSOR</type>. Returns a foreign pointer to the previous <type>HCURSOR</type></para></varlistentry>
 <varlistentry id="GetCursorPos"><term><code>(GetCursorPos LPPOINT)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCursorPos">MSDN</ulink></para>
-  <para>Gets the absolute mouse cursor position. Returns <constant>&t;</constant> and the x and y coordinate of the mouse. Or <constant>&nil;</constant></para></varlistentry>
+  <para>Gets the absolute mouse cursor position. Returns the x and y coordinate of the mouse. Or &nil;</para></varlistentry>
 <varlistentry id="SetCursorPos"><term><code>(SetCursorPos int int)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetCursorPos">MSDN</ulink></para>
-  <para>Moves the mouse cursor to the specified screen coordinates. Accepts x und y integers. Returns <constant>&t;</constant> or <constant>&nil;</constant></para></varlistentry>
+  <para>Moves the mouse cursor to the specified screen coordinates. Accepts x und y integers. Returns &t; or &nil;</para></varlistentry>
 <varlistentry id="GetCursorInfo"><term><code>(GetCursorInfo PCURSORINFO)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetCursorInfo">MSDN</ulink></para>
-  <para>Sets the slots in the record <type>PCURSORINFO</type>. Returns <constant>&t;</constant> or <constant>&nil;</constant></para></varlistentry>
+  <para>Sets the slots in the record <type>PCURSORINFO</type>. Returns &t; or &nil;</para></varlistentry>
 <!--
 <varlistentry id="GetDCPenColor"><term><code>(GetDCPenColor HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDCPenColor">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and the color as &integer-t; for the current DC pen color. On <code>CLR_INVALID</code> return &nil;.</para></varlistentry>
+  <para>Returns the color as &integer-t; for the current DC pen color. On <code>CLR_INVALID</code> return &nil;.</para></varlistentry>
 -->
 <varlistentry id="SetDCPenColor"><term><code>(SetDCPenColor HDC COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetDCPenColor">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and the previous DC_BRUSH value as &integer-t;.</para></varlistentry>
+  <para>Returns the previous DC_BRUSH value as &integer-t;.</para></varlistentry>
 <!--
 <varlistentry id="GetDCBrushColor"><term><code>(GetDCBrushColor HDC)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDCBrushColor">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and the color as &integer-t; for the current DC brush color. On <code>CLR_INVALID</code> return &nil;.</para></varlistentry>
+  <para>Returns the color as &integer-t; for the current DC brush color. On <code>CLR_INVALID</code> return &nil;.</para></varlistentry>
 -->
 <varlistentry id="SetDCBrushColor"><term><code>(SetDCBrushColor HDC COLORREF)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=SetDCBrushColor">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and the previous DC_BRUSH value as &integer-t;.</para></varlistentry>
+  <para>Returns the previous DC_BRUSH value as &integer-t;.</para></varlistentry>
 <varlistentry id="GetWindowDC"><term><code>(GetWindowDC HWND)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetWindowDC">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> handle.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> handle.</para></varlistentry>
 <varlistentry id="GetDCEx"><term><code>(GetDCEx HWND HRGN DWORD)</code></term>
   <para>See <ulink url="http://social.msdn.microsoft.com/search/en-us/?query=GetDCEx">MSDN</ulink></para>
-  <para>Returns <constant>&t;</constant> and a &foreign-pointer; to the <type>HDC</type> handle.</para></varlistentry>
+  <para>Returns a &foreign-pointer; to the <type>HDC</type> handle.</para></varlistentry>
 
 </variablelist>
 </section>

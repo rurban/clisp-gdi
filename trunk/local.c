@@ -1,25 +1,100 @@
-#line 2 "local.c"
+#line 1 "local.c"
+/* Process incoming args and create return values (lisp structs and foreign ptrs) */
+/* processTYPE(c-ptr, object): lisp => C
+   object = outputTYPE(c-ptr): C => lisp */
+
+extern object allocate_ffloat (ffloat value);
+
+/* Global error handling */
+/* TODO: call customizable lisp handler, like
+   (GDI::error-handler fn) to be able to use
+   (error signature) or popup a window or ignore the error.
+*/
+#define do_GDI_ERROR(fn)        \
+  DWORD e;			\
+  begin_system_call();          \
+  e = GetLastError();		\
+  end_system_call();		\
+  value1 = NIL;                 \
+  value2 = uint32_to_I(e);	\
+  mv_count=2
+
+#define do_GDI_ERROR_ext(fn)    \
+    DWORD e;			\
+    begin_system_call();	\
+    e = GetLastError();		\
+    end_system_call();		\
+    value1 = NIL;		\
+    value2 = uint32_to_I(e);	\
+  /* dynamic_bind(``*last-error*``, value2), */   \
+    /*pushSTACK(value2);*/      \
+    /*pushSTACK(``last-error``);*/  \
+    /*funcall(L(setq),2);*/      \
+    /*pushSTACK(TheSubr(subr_self)->name);*/ \
+    /*GDI::error-handler;*/     \
+    /*OS_error();*/             \
+    mv_count=2
+
+nonreturning_function(static, invalid_argument, (object obj)) {
+  pushSTACK(obj);
+  error(error_condition,GETTEXT("~S is an invalid argument"));
+}
+nonreturning_function(static, invalid_named_argument, (object obj, char *name)) {
+  pushSTACK(asciz_to_string(name, encoding));
+  pushSTACK(obj);
+  error(error_condition,GETTEXT("~S is an invalid argument for ~S"));
+}
+
+#define getHDC(hdc,arg)                         	\
+  arg = popSTACK(); 					\
+  if(!fpointerp(arg))invalid_named_argument(arg, "hdc");\
+  hdc = TheFpointer(arg)->fp_pointer
+
+/* allow processFPTYPE_fn(HPALETTE,hpalette,popSTACK()); */
+#define processFPTYPE_fn(type, ptr, arg) 	\
+    { object obj = arg;			        \
+      if(!fpointerp(obj))invalid_argument(obj); \
+      ptr = (type)TheFpointer(obj)->fp_pointer;}
+
+/* only processFPTYPE(HPALETTE,hpalette,arg); */
+#define processFPTYPE(type, ptr, arg) 		\
+      if(!fpointerp(arg))invalid_argument(arg); \
+      ptr = (type)TheFpointer(arg)->fp_pointer
+
 static void processBOOL(void *p,object arg){
-    // arg: T or nil
+    // arg: T or nil => 0 or 1
     BOOL b;
     b = (BOOL)I_to_uint32(arg);
     p = &b;
 }
-static void processFINDEX_INFO_LEVELS(void *p,object arg){ assert(0); }
-static void processFINDEX_SEARCH_OPS(void *p,object arg){ assert(0); }
-static void processLPSTR(void *p,object arg){ assert(0); }
-static void processLPWSTR(void *p,object arg){ assert(0); }
-static void processPBITMAPINFO(void *p,object arg){ assert(0); }
+//static void processFINDEX_INFO_LEVELS(void *p,object arg){ assert(0); }
+//static void processFINDEX_SEARCH_OPS(void *p,object arg){ assert(0); }
+//static void processLPSTR(void *p,object arg){ assert(0); }
+static void processLPWSTR(LPCWSTR lpcwstr,object arg){ 
+  if(!stringp(arg))invalid_argument(arg);
+  lpcwstr = WIDECHAR(arg,encoding);
+}
+// create a S16string how? size includes the ending 0
+static object outputLPWSTR(LPCWSTR lpcwstr, uint size){ 
+  /*object string = allocate_imm_s16string(size-1);
+    copy_16bit_16bit(lpcwstr, &TheS16string(string)->data[0],size-1);*/
+  //assert(0);
+  //return asciz_to_string(lpcwstr,GLO(misc_encoding));
+  return allocate_fpointer(lpcwstr);
+}
+// size includes the ending 0
+static object outputLPSTR(LPCSTR lpcstr, uint size){
+  return asciz_to_string(lpcstr,GLO(misc_encoding));
+}
+//static void processPBITMAPINFO(void *p,object arg){ assert(0); }
 static void processPINT(void *p,object arg){
     int i;
     i = I_to_uint32(check_uint(arg));
     p = &i;
 }
-static void processSTR_P(void *p,object arg){ assert(0); }
-static void processWSTR_P(void *p,object arg){ assert(0); }
-static void outputCOLORADJUSTMENT(COLORADJUSTMENT *p, object arg){ assert(0); }
-static void outputXFORM(XFORM *p, object arg){ assert(0); }
-static void processABC(ABC *p, object arg){ assert(0); }
+//static void processSTR_P(void *p,object arg){ assert(0); }
+//static void processWSTR_P(void *p,object arg){ assert(0); }
+//static void processABC(ABC *p, object arg){ assert(0); }
 static void processPBYTE(BYTE *p, object arg){
     BYTE i;
     i = I_to_uint32(check_uint(arg));
@@ -30,81 +105,79 @@ static void processBYTE(BYTE *p, object arg){
     i = I_to_sint32(check_sint(arg));
     p = &i;
 }
-static void processABCFLOAT(ABCFLOAT *p, object arg){ assert(0); }
-static void processENHMETAHEADER(void *p, object arg){ assert(0); }
-static void processFONTSIGNATURE(void *p, object arg){ assert(0); }
-static void processKERNINGPAIR(void *p, object arg){ assert(0); }
-static void processOUTLINETEXTMETRICA(void *p, object arg){ assert(0); }
-static void processOUTLINETEXTMETRICW(void *p, object arg){ assert(0); }
-static void processRASTERIZER_STATUS(void *p, object arg){ assert(0); }
-static void processRGBQUAD(RGBQUAD *p, object arg){ assert(0); }
-static void processTEXTMETRICW(TEXTMETRICW*p, object arg){ assert(0); }
-static void outputGLYPHMETRICS(GLYPHMETRICS* p, object arg){ assert(0); }
-static void processGCP_RESULTSA(GCP_RESULTSA* p, object arg){ assert(0); }
-static void processGCP_RESULTSW(GCP_RESULTSW* p, object arg){ assert(0); }
-static void processHANDLETABLE_C(HANDLETABLE* p, object arg, unsigned int count){}
-static void processLOGCOLORSPACEA(LOGCOLORSPACEA* p, object arg){ assert(0); }
-static void processLOGCOLORSPACEW(LOGCOLORSPACEW* p, object arg){ assert(0); }
-static void processMETARECORD(METARECORD* p, object arg){ assert(0); }
-static void processPOLYTEXTW(POLYTEXTW* p, object arg){ assert(0); }
-static void processSIZE(SIZE* p, object arg){ assert(0); }
+//static void processABCFLOAT(ABCFLOAT *p, object arg){ assert(0); }
+//static void processENHMETAHEADER(void *p, object arg){ assert(0); }
+//static void processFONTSIGNATURE(void *p, object arg){ assert(0); }
+//static void processKERNINGPAIR(void *p, object arg){ assert(0); }
+//static void processOUTLINETEXTMETRICA(void *p, object arg){ assert(0); }
+//static void processOUTLINETEXTMETRICW(void *p, object arg){ assert(0); }
+//static void processRASTERIZER_STATUS(void *p, object arg){ assert(0); }
+//static void processRGBQUAD(RGBQUAD *p, object arg){ assert(0); }
+//static void processTEXTMETRICW(TEXTMETRICW*p, object arg){ assert(0); }
+//static void outputGLYPHMETRICS(GLYPHMETRICS* p, object arg){ assert(0); }
+//static void processGCP_RESULTSA(GCP_RESULTSA* p, object arg){ assert(0); }
+//static void processGCP_RESULTSW(GCP_RESULTSW* p, object arg){ assert(0); }
+//static void processHANDLETABLE_C(HANDLETABLE* p, object arg, unsigned int count){}
+//static void processLOGCOLORSPACEA(LOGCOLORSPACEA* p, object arg){ assert(0); }
+//static void processLOGCOLORSPACEW(LOGCOLORSPACEW* p, object arg){ assert(0); }
+//static void processMETARECORD(METARECORD* p, object arg){ assert(0); }
+//static void processPOLYTEXTW(POLYTEXTW* p, object arg){ assert(0); }
+//static void processSIZE(SIZE* p, object arg){ assert(0); }
 static void processvoid(void* p, object arg){
   p = (void *)I_to_uint32(arg);
 }
-static void processABORTPROC(ABORTPROC *p,object arg){ assert(0); }
-static void processBITMAPINFO(BITMAPINFO *p,object arg){ assert(0); }
-static void processBITMAPINFOHEADER(BITMAPINFOHEADER *p,object arg){ assert(0); }
-static void processDEVMODEA(DEVMODEA *p,object arg){ assert(0); }
-static void processDEVMODEW(DEVMODEW *p,object arg){ assert(0); }
-static void processDOCINFOA(DOCINFOA *p,object arg){ assert(0); }
-static void processDOCINFOW(DOCINFOW *p,object arg){ assert(0); }
-static void processENHMETARECORD(ENHMETARECORD *p,object arg){ assert(0); }
-static void processENHMFENUMPROC(ENHMFENUMPROC *p,object arg){ assert(0); }
-static void processFONTENUMPROCA(FONTENUMPROCA *p,object arg){ assert(0); }
-static void processFONTENUMPROCW(FONTENUMPROCW *p,object arg){ assert(0); }
-static void processGLYPHMETRICS(GLYPHMETRICS *p,object arg){ assert(0); }
-static void processGOBJENUMPROC(GOBJENUMPROC *p,object arg){ assert(0); }
-static void processICMENUMPROCA(ICMENUMPROCA *p,object arg){ assert(0); }
-static void processICMENUMPROCW(ICMENUMPROCW *p,object arg){ assert(0); }
-static void processLINEDDAPROC(LINEDDAPROC *p,object arg){ assert(0); }
-static void processLOGPALETTE(LOGPALETTE *p,object arg){ assert(0); }
-static void processLOGPEN(LOGPEN *p,object arg){ assert(0); }
-static void processLPABC(LPABC *p,object arg){ assert(0); }
-static void processLPABCFLOAT(LPABCFLOAT *p,object arg){ assert(0); }
-static void processLPBITMAPINFO(LPBITMAPINFO *p,object arg){ assert(0); }
-static void processLPCHARSETINFO(LPCHARSETINFO *p,object arg){ assert(0); }
-static void processLPCOLORADJUSTMENT(LPCOLORADJUSTMENT *p,object arg){ assert(0); }
-static void processLPCRECT(LPCRECT *p,object arg){ assert(0); }
-static void processLPENHMETAHEADER(LPENHMETAHEADER *p,object arg){ assert(0); }
-static void processLPFONTSIGNATURE(LPFONTSIGNATURE *p,object arg){ assert(0); }
-static void processLPGCP_RESULTSA(LPGCP_RESULTSA *p,object arg){ assert(0); }
-static void processLPGCP_RESULTSW(LPGCP_RESULTSW *p,object arg){ assert(0); }
-static void processLPHANDLETABLE(LPHANDLETABLE *p,object arg){ assert(0); }
-static void processLPINT(LPINT *p,object arg){ assert(0); }
-static void processLPKERNINGPAIR(LPKERNINGPAIR *p,object arg){ assert(0); }
-static void processLPLOGCOLORSPACEA(LPLOGCOLORSPACEA *p,object arg){ assert(0); }
-static void processLPLOGCOLORSPACEW(LPLOGCOLORSPACEW *p,object arg){ assert(0); }
-static void processLPMETARECORD(LPMETARECORD *p,object arg){ assert(0); }
-static void processLPOUTLINETEXTMETRICA(LPOUTLINETEXTMETRICA *p,object arg){ assert(0); }
-static void processLPOUTLINETEXTMETRICW(LPOUTLINETEXTMETRICW *p,object arg){ assert(0); }
-static void processLPPALETTEENTRY(LPPALETTEENTRY *p,object arg){ assert(0); }
-static void processLPPIXELFORMATDESCRIPTOR(LPPIXELFORMATDESCRIPTOR *p,object arg){ assert(0); }
-//static void processLPPOINT(LPPOINT *p,object arg){ assert(0); }
-static void processLPRASTERIZER_STATUS(LPRASTERIZER_STATUS *p,object arg){ assert(0); }
-static void processLPRECT(LPRECT *p,object arg){ assert(0); }
-static void processLPSIZE(LPSIZE *p,object arg){ assert(0); }
-static void processLPTEXTMETRICA(LPTEXTMETRICA *p,object arg){ assert(0); }
-static void processLPTEXTMETRICW(LPTEXTMETRICW *p,object arg){ assert(0); }
-//static void processLPXFORM(LPXFORM *p,object arg){ assert(0); }
-static void processMFENUMPROC(MFENUMPROC *p,object arg){ assert(0); }
-static void processPFLOAT(PFLOAT *p,object arg){ assert(0); }
-static void processRGNDATA(RGNDATA *p,object arg){ assert(0); }
-static void processRGNDATA_C(RGNDATA *p,object arg, int count){}
-
-nonreturning_function(static, invalid_argument, (object obj)) {
-  pushSTACK(obj);
-  error(error_condition,GETTEXT("~ is a invalid argument"));
+//static void processABORTPROC(ABORTPROC *p,object arg){ assert(0); }
+//static void processBITMAPINFO(BITMAPINFO *p,object arg){ assert(0); }
+//static void processBITMAPINFOHEADER(BITMAPINFOHEADER *p,object arg){ assert(0); }
+//static void processDEVMODEA(DEVMODEA *p,object arg){ assert(0); }
+//static void processDEVMODEW(DEVMODEW *p,object arg){ assert(0); }
+//static void processDOCINFOA(DOCINFOA *p,object arg){ assert(0); }
+//static void processDOCINFOW(DOCINFOW *p,object arg){ assert(0); }
+//static void processENHMETARECORD(ENHMETARECORD *p,object arg){ assert(0); }
+//static void processENHMFENUMPROC(ENHMFENUMPROC *p,object arg){ assert(0); }
+static void processFONTENUMPROCA(FONTENUMPROCA *p,object arg){ 
+  if(!fpointerp(arg))invalid_argument(arg);
+  p = (FONTENUMPROCA *)TheFpointer(arg)->fp_pointer;
 }
+//static void processFONTENUMPROCW(FONTENUMPROCW *p,object arg){ assert(0); }
+//static void processGLYPHMETRICS(GLYPHMETRICS *p,object arg){ assert(0); }
+//static void processGOBJENUMPROC(GOBJENUMPROC *p,object arg){ assert(0); }
+//static void processICMENUMPROCA(ICMENUMPROCA *p,object arg){ assert(0); }
+//static void processICMENUMPROCW(ICMENUMPROCW *p,object arg){ assert(0); }
+//static void processLINEDDAPROC(LINEDDAPROC *p,object arg){ assert(0); }
+//static void processLOGPALETTE(LOGPALETTE *p,object arg){ assert(0); }
+//static void processLOGPEN(LOGPEN *p,object arg){ assert(0); }
+//static void processLPABC(LPABC *p,object arg){ assert(0); }
+//static void processLPABCFLOAT(LPABCFLOAT *p,object arg){ assert(0); }
+//static void processLPBITMAPINFO(LPBITMAPINFO *p,object arg){ assert(0); }
+//static void processLPCHARSETINFO(LPCHARSETINFO *p,object arg){ assert(0); }
+//static void processLPCOLORADJUSTMENT(LPCOLORADJUSTMENT *p,object arg){ assert(0); }
+//static void processLPCRECT(LPCRECT *p,object arg){ assert(0); }
+//static void processLPENHMETAHEADER(LPENHMETAHEADER *p,object arg){ assert(0); }
+//static void processLPFONTSIGNATURE(LPFONTSIGNATURE *p,object arg){ assert(0); }
+//static void processLPGCP_RESULTSA(LPGCP_RESULTSA *p,object arg){ assert(0); }
+//static void processLPGCP_RESULTSW(LPGCP_RESULTSW *p,object arg){ assert(0); }
+//static void processLPHANDLETABLE(LPHANDLETABLE *p,object arg){ assert(0); }
+//static void processLPINT(LPINT *p,object arg){ assert(0); }
+//static void processLPKERNINGPAIR(LPKERNINGPAIR *p,object arg){ assert(0); }
+//static void processLPLOGCOLORSPACEA(LPLOGCOLORSPACEA *p,object arg){ assert(0); }
+//static void processLPLOGCOLORSPACEW(LPLOGCOLORSPACEW *p,object arg){ assert(0); }
+//static void processLPMETARECORD(LPMETARECORD *p,object arg){ assert(0); }
+//static void processLPOUTLINETEXTMETRICA(LPOUTLINETEXTMETRICA *p,object arg){ assert(0); }
+//static void processLPOUTLINETEXTMETRICW(LPOUTLINETEXTMETRICW *p,object arg){ assert(0); }
+//static void processLPPALETTEENTRY(LPPALETTEENTRY *p,object arg){ assert(0); }
+//static void processLPPIXELFORMATDESCRIPTOR(LPPIXELFORMATDESCRIPTOR *p,object arg){ assert(0); }
+//static void processLPPOINT(LPPOINT *p,object arg){ assert(0); }
+//static void processLPRASTERIZER_STATUS(LPRASTERIZER_STATUS *p,object arg){ assert(0); }
+//static void processLPRECT(LPRECT *p,object arg){ assert(0); }
+//static void processLPSIZE(LPSIZE *p,object arg){ assert(0); }
+//static void processLPTEXTMETRICA(LPTEXTMETRICA *p,object arg){ assert(0); }
+//static void processLPTEXTMETRICW(LPTEXTMETRICW *p,object arg){ assert(0); }
+//static void processLPXFORM(LPXFORM *p,object arg){ assert(0); }
+//static void processMFENUMPROC(MFENUMPROC *p,object arg){ assert(0); }
+//static void processPFLOAT(PFLOAT *p,object arg){ assert(0); }
+//static void processRGNDATA(RGNDATA *p,object arg){ assert(0); }
+//static void processRGNDATA_C(RGNDATA *p,object arg, int count){}
 
 static void processICONINFO(ICONINFO *p,object arg)
 {
@@ -135,10 +208,16 @@ static void processLOGFONTA(LOGFONTA *p,object arg)
       (LPCSTR)TheAsciz(string_to_asciz(TheRecord(arg)->recdata[i++],encoding)),
       sizeof(p->lfFaceName));
 }
+static void processPLOGFONTA(LOGFONTA *p,object arg)
+{
+  if(!fpointerp(arg))invalid_argument(arg);
+  p = (LOGFONTA *)TheFpointer(arg)->fp_pointer;
+}
 static void processLOGFONTW(LOGFONTW *p,object arg){ assert(0); }
-static void outputRECT(RECT *r, object p)
+static object outputRECT(RECT *r)
 {
   int i = 0;
+  object p;
   object num;
   pushSTACK(p); // Push the record to keep it safe from gc
   num = UL_to_I(r->left); // Can cause gc
@@ -149,8 +228,13 @@ static void outputRECT(RECT *r, object p)
   TheRecord(STACK_0)->recdata[i++] = num;
   num = UL_to_I(r->bottom); // Can cause gc
   TheRecord(popSTACK())->recdata[i++] = num;
+  return p;
 }
 // untested - was never called
+// used in: 
+// removed from: AnimatePallette SetPaletteEntries GetPaletteEntries 
+//               GetEnhMetaFilePaletteEntries GetSystemPaletteEntries
+/*
 static void processPALETTEENTRY(PALETTEENTRY* p, object arg)
 {
    int i = 0;
@@ -159,7 +243,9 @@ static void processPALETTEENTRY(PALETTEENTRY* p, object arg)
    p->peBlue = I_to_uint8(TheRecord(arg)->recdata[i++]);
    p->peFlags = I_to_uint8(TheRecord(arg)->recdata[i++]);
 }
+*/
 // untested - was never called
+// could be used in CheckColorsInGamut, but we use 8-bit bitvectors
 static void processRGBQUAD_C(RGBQUAD* p, object args,DWORD length)
 {
    int j;
@@ -175,18 +261,35 @@ static void processRGBQUAD_C(RGBQUAD* p, object args,DWORD length)
 }
 static DWORD processCOLORREF(object arg)
 {
+  // check for int or struct
+  if (integerp(arg)) {
+    return I_to_uint32(arg);
+  } else {
     int i = 0;
     BYTE r = I_to_uint8(TheRecord(arg)->recdata[i++]);
     BYTE g = I_to_uint8(TheRecord(arg)->recdata[i++]);
     BYTE b = I_to_uint8(TheRecord(arg)->recdata[i++]);
     return RGB(r,g,b);
+  }
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
+// NULL is for the identity transform
 static void processXFORM(XFORM *p, object arg)
 {
+  if (nullp(arg)) {
+    p = NULL;
+  } else {
     int i = 0;
     ffloatjanus jfloat;
+#if 0
+    if (fpointerp(arg)) {
+      //p = TheFvariable(obj)->fv_address;
+      //pushSTACK(arg);
+      //`foreign_pointer`;
+      p = (XFORM*)ulong_to_I((uintP)TheFpointer(arg)->fp_pointer);
+      return;
+    }
+#endif
     FF_to_c_float(TheRecord(arg)->recdata[i++],&jfloat);
     p->eM11 = (float)(jfloat.eksplicit);
     FF_to_c_float(TheRecord(arg)->recdata[i++],&jfloat);
@@ -199,14 +302,44 @@ static void processXFORM(XFORM *p, object arg)
     p->eDx = (float)(jfloat.eksplicit);
     FF_to_c_float(TheRecord(arg)->recdata[i++],&jfloat);
     p->eDy = (float)(jfloat.eksplicit);
+  }
+}
+static object outputXFORM(XFORM *p){ 
+  int i = 1;
+  object arg;
+  pushSTACK(arg);
+  TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->eM11);
+  TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->eM12);
+  TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->eM21);
+  TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->eM22);
+  TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->eDx);
+  TheRecord(popSTACK())->recdata[i++] = allocate_ffloat(p->eDy);
+  return arg;
+}
+static object outputABCFLOAT(ABCFLOAT *p){ 
+  int i = 1;
+  object arg;
+  pushSTACK(arg);
+  TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->abcfA);
+  TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->abcfB);
+  TheRecord(popSTACK())->recdata[i++] = allocate_ffloat(p->abcfC);
+  return arg;
+}
+static void processLPSIZE(SIZE *p, object arg)
+{
+   int i = 1;
+   p->cx = I_to_L(TheRecord(arg)->recdata[i++]);
+   p->cy = I_to_L(TheRecord(arg)->recdata[i++]);
 }
 // Return a SIZE structure
-static void outputLPSIZE(LPSIZE lpsize,object arg)
+static object outputLPSIZE(SIZE *lpsize)
 {
   int i = 1;
+  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(lpsize->cx);
   TheRecord(popSTACK())->recdata[i++] = fixnum(lpsize->cy);
+  return arg;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
@@ -216,12 +349,14 @@ static void processPOINT(POINT* p, object arg)
    p->x = I_to_sint32(TheRecord(arg)->recdata[i++]);
    p->y = I_to_sint32(TheRecord(arg)->recdata[i++]);
 }
-static void outputPOINT(POINT *p, object arg)
+static object outputPOINT(POINT *p)
 {
   int i = 1;
+  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->x);
   TheRecord(popSTACK())->recdata[i++] = fixnum(p->y);
+  return arg;
 }
 
 // untested - was never called
@@ -253,6 +388,9 @@ static void processCOLORADJUSTMENT(COLORADJUSTMENT *p, object arg)
    SHORT *s = (SHORT*)p;
    for(i = 0; i < 8; i++)w[i]= I_to_uint16(TheRecord(arg)->recdata[i]);
    for(; i < 12; i++)s[i] = I_to_sint16(TheRecord(arg)->recdata[i]);
+}
+static object outputCOLORADJUSTMENT(COLORADJUSTMENT *p){
+    return allocate_fpointer((FOREIGN)p);
 }
 // untested - was never called
 static void processPIXELFORMATDESCRIPTOR(PIXELFORMATDESCRIPTOR* p,object arg)
@@ -402,9 +540,11 @@ static void processCREATESTRUCTA(CREATESTRUCT *p, object arg)
   p->hInstance = nullp(s)?0:TheFpointer(s)->fp_pointer;
   p->lpCreateParams = 0;  //= I_to_uint8(TheRecord(arg)->recdata[i++]);
 }
-static void outputCREATESTRUCTA(CREATESTRUCT *p, object arg)
+// unused
+static object outputCREATESTRUCTA(CREATESTRUCT *p)
 {
   int i = 1;
+  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = UL_to_I(p->dwExStyle);
   TheRecord(STACK_0)->recdata[i++] = p->lpszClass?
@@ -422,10 +562,12 @@ static void outputCREATESTRUCTA(CREATESTRUCT *p, object arg)
   TheRecord(STACK_0)->recdata[i++] = allocate_fpointer((FOREIGN)p->hMenu);
   TheRecord(STACK_0)->recdata[i++] = allocate_fpointer((FOREIGN)p->hInstance);
   TheRecord(popSTACK())->recdata[i++] = NIL; //L_to_I(p->lpCreateParams);
+  return arg;
 }
-static void outputTEXTMETRICA(TEXTMETRICA *p, object arg)
+static object outputTEXTMETRICA(TEXTMETRICA *p)
 {
   int i = 1;
+  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmHeight);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmAscent);
@@ -447,8 +589,35 @@ static void outputTEXTMETRICA(TEXTMETRICA *p, object arg)
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmStruckOut);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmPitchAndFamily);
   TheRecord(popSTACK())->recdata[i++] = fixnum(p->tmCharSet);
+  return arg;
 }
-extern object allocate_ffloat (ffloat value);
+static object outputTEXTMETRICW(TEXTMETRICW *p)
+{
+  int i = 1;
+  object arg;
+  pushSTACK(arg);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmHeight);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmAscent);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmDescent);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmInternalLeading);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmExternalLeading);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmAveCharWidth);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmMaxCharWidth);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmWeight);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmOverhang);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmDigitizedAspectX);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmDigitizedAspectY);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmFirstChar);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmLastChar);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmDefaultChar);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmBreakChar);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmItalic);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmUnderlined);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmStruckOut);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmPitchAndFamily);
+  TheRecord(popSTACK())->recdata[i++] = fixnum(p->tmCharSet);
+  return arg;
+}
 static object outputFLOATS(FLOAT *f, UINT length){
     return allocate_ffloat((ffloat)*f);
 }
@@ -462,13 +631,59 @@ static void processCURSORINFO(CURSORINFO *c, object arg){
   c->ptScreenPos.x = I_to_L(TheRecord(arg)->recdata[i++]);
   c->ptScreenPos.y = I_to_L(TheRecord(arg)->recdata[i++]);
 }
-static void outputCURSORINFO(CURSORINFO *c, object arg)
+static object outputCURSORINFO(CURSORINFO *c)
 {
   int i = 1;
+  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = UL_to_I(c->cbSize);
   TheRecord(STACK_0)->recdata[i++] = UL_to_I(c->flags);
   TheRecord(STACK_0)->recdata[i++] = allocate_fpointer((FOREIGN)c->hCursor);
   TheRecord(STACK_0)->recdata[i++] = fixnum(c->ptScreenPos.x);
   TheRecord(popSTACK())->recdata[i++] = fixnum(c->ptScreenPos.y);
+  return arg;
+}
+static object outputGCP_RESULTSA(GCP_RESULTSA* p){
+  int i = 1;
+  object arg;
+  pushSTACK(arg);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->lStructSize);
+  TheRecord(STACK_0)->recdata[i++] = p->lpOutString?
+      asciz_to_string((const char*)p->lpOutString,encoding):
+      O(fp_zero);
+  /* TODO: simple_int bitvectors */
+  TheRecord(STACK_0)->recdata[i++] = p->lpOrder?
+      allocate_fpointer((FOREIGN)p->lpOrder):O(fp_zero);
+  TheRecord(STACK_0)->recdata[i++] = p->lpDx?
+      allocate_fpointer((FOREIGN)p->lpDx):O(fp_zero);
+  TheRecord(STACK_0)->recdata[i++] = p->lpCaretPos?
+      allocate_fpointer((FOREIGN)p->lpCaretPos):O(fp_zero);
+  TheRecord(STACK_0)->recdata[i++] = p->lpClass?
+      asciz_to_string((const char*)p->lpClass,encoding):
+      O(fp_zero);
+  TheRecord(STACK_0)->recdata[i++] = UL_to_I(p->nGlyphs);
+  TheRecord(popSTACK())->recdata[i++] = UL_to_I(p->nMaxFit);
+  return arg;
+}
+static object outputGCP_RESULTSW(GCP_RESULTSW* p){ 
+  int i = 1;
+  object arg;
+  pushSTACK(arg);
+  TheRecord(STACK_0)->recdata[i++] = fixnum(p->lStructSize);
+  /* TODO: convert to S16string */
+  TheRecord(STACK_0)->recdata[i++] = p->lpOutString?
+    outputLPWSTR(p->lpOutString,0):O(fp_zero);
+  /* TODO: int bitvectors */
+  TheRecord(STACK_0)->recdata[i++] = p->lpOrder?
+    allocate_fpointer((FOREIGN)p->lpOrder):O(fp_zero);
+  TheRecord(STACK_0)->recdata[i++] = p->lpDx?
+    allocate_fpointer((FOREIGN)p->lpDx):O(fp_zero);
+  TheRecord(STACK_0)->recdata[i++] = p->lpCaretPos?
+    allocate_fpointer((FOREIGN)p->lpCaretPos):O(fp_zero);
+  /* TODO: convert to S16string */
+  TheRecord(STACK_0)->recdata[i++] = p->lpClass?
+    outputLPWSTR(p->lpClass,0):O(fp_zero);
+  TheRecord(STACK_0)->recdata[i++] = UL_to_I(p->nGlyphs);
+  TheRecord(popSTACK())->recdata[i++] = UL_to_I(p->nMaxFit);
+  return arg;
 }

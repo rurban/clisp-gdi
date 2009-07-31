@@ -73,7 +73,7 @@ function pastat(retType, retName, funcName,args,argTypes, argNames,rest) {
     doInits(inits)
     if(rest)doRest();
     doCall(retName, funcName, argNames)
-    doRet(retType,retName)
+    doRet(retType,retName,funcName)
     nt--; gen("}")
 }
 function doRest(){
@@ -111,8 +111,8 @@ function doHead(f,a,s) {
    s = makeStringFromArray(a)
    gen("// untested - was never called")
    gen("// uninspected - compiles but code was not checked")
-   #gen("DEFUN( GDI:" toupper(f) "," s ")")
-   gen("DEFUN( " toupper(f) ":" f "," s ")")
+   gen("DEFUN( GDI:" f "," s ")")
+   #gen("DEFUN( " toupper(f) ":" f "," s ")")
    return s
 }
 function doCall(r,f,a,s,i,sep) {
@@ -126,110 +126,88 @@ function doCall(r,f,a,s,i,sep) {
    gen(r " = " f "(" s ");")
    gen("end_call();")
 }
-function doRet(r,name) {
-    if(r ~/H.*/)doHandle(name)
-    else if("void" == r)doVoid()
-    else if("BOOL"==r)doBool(name)
-    else if("BYTE"==r)doByte(name)
-    else if("WORD"==r)doWord(name)
-    else if("ATOM"==r)doAtom(name)
-    else if("CHAR"==r || "char" == r)doChar(name)
-    else if("int"==r || "LONG" == r || "INT" == r || "LPARAM"==r)doInt(name,"s")
-    else if("DWORD"==r || "UINT" == r)doInt(name,"u")
+function doRet(r,name,f) {
+    if(r ~/H.*/)doHandle(name,f)
+    else if("void" == r)doVoid(f)
+    else if("BOOL"==r)doBool(name,f)
+    else if("BYTE"==r)doByte(name,f)
+    else if("WORD"==r)doWord(name,f)
+    else if("ATOM"==r)doAtom(name,f)
+    else if("CHAR"==r || "char" == r)doChar(name,f)
+    else if("int"==r || "LONG" == r || "WORD" == r || "INT" == r || "LPARAM"==r)doInt(name,"s",f)
+    else if("DWORD"==r || "UINT" == r)doInt(name,"u",f)
 }
-function doInt(name,ty){
-  gen("if(0 <=" name "){")
+function gen_error(f){
+  gen("GDI_ERROR(\""f"\");")
+}
+function doInt(name,ty,f){
+  if(ty == "u") gen("if(!" name "){")
+  else gen("if(0 <=" name "){")
   nt++
-  gen("DWORD e;")
-  gen("begin_call();");
-  gen("e = GetLastError();")
-  gen("end_call();")
-  gen("value1 = NIL;")
-  gen("value2 = uint32_to_I(e);")
-  gen("mv_count=2;")
+  gen_error(f)
   nt--
   gen("}")
   gen("else")
   gen("{")
   nt++
-  gen("value1 = T;")
-  gen("value2 = "ty"int32_to_I("name");")
-  gen("mv_count=2;")
+  gen("value1 = "ty"int32_to_I("name");")
+  gen("mv_count=1;")
   nt--
   gen("}")
   gen("return;")
 }
-function doHandle(h) {
+function doHandle(h,f) {
   gen("if(NULL ==" h "){")
   nt++
-  gen("DWORD e;")
-  gen("begin_call();");
-  gen("e = GetLastError();")
-  gen("end_call();")
-  gen("value1 = NIL;")
-  gen("value2 = uint32_to_I(e);")
-  gen("mv_count=2;")
+  gen_error(f)
   nt--
   gen("}")
   gen("else")
   gen("{")
   nt++
-  gen("value1 = T;")
-  gen("value2 = allocate_fpointer((FOREIGN)"h");")
-  gen("mv_count=2;")
+  gen("value1 = allocate_fpointer((FOREIGN)"h");")
+  gen("mv_count=1;")
   nt--
   gen("}")
   gen("return;")
 }
-function doVoid()
+function doVoid(f)
 {
    gen("mv_count = 0;")
    gen("return;")
 }
-function doByte(b)
+function doByte(b,f)
 {
-   gen("mv_count = 1;")
    gen("value1 = uint8_to_I(" b ");")
-   gen("return;")
-}
-function doWord(b)
-{
    gen("mv_count = 1;")
-   gen("value1 = uint16_to_I(" b ");")
    gen("return;")
 }
-function doAtom(h) {
+function doWord(b,f)
+{
+   gen("value1 = uint16_to_I(" b ");")
+   gen("mv_count = 1;")
+   gen("return;")
+}
+function doAtom(h,f) {
   gen("if(0 ==" h "){")
   nt++
-  gen("DWORD e;")
-  gen("begin_call();");
-  gen("e = GetLastError();")
-  gen("end_call();")
-  gen("value1 = NIL;")
-  gen("value2 = uint32_to_I(e);")
-  gen("mv_count=2;")
+  gen_error(f)
   nt--
   gen("}")
   gen("else")
   gen("{")
   nt++
-  gen("value1 = T;")
-  gen("value2 = allocate_fpointer((FOREIGN)"h");")
-  gen("mv_count=2;")
+  #gen("value1 = allocate_fpointer((FOREIGN)"h");")
+  gen("value1 = uint32_to_I(" h ");")
+  gen("mv_count=1;")
   nt--
   gen("}")
   gen("return;")
 }
-function doBool(b) {
+function doBool(b,f) {
   gen("if(!" b "){")
   nt++
-  gen("DWORD e;")
-  gen("begin_call();");
-  gen("e = GetLastError();")
-  gen("end_call();")
-  gen("value1 = NIL;")
-  gen("value2 = uint32_to_I(e);")
-  gen("mv_count=2;")
+  gen_error(f)
   nt--
   gen("}")
   gen("else")
@@ -242,7 +220,7 @@ function doBool(b) {
   gen("return;")
 }
 
-function doChar(b)
+function doChar(b,f)
 {
    gen("mv_count = 1;")
    gen("value1 = int_char(" b ");")
@@ -286,22 +264,18 @@ function simplestat(   lhs) { # ident = expr | name(exprlist)
         return "assign(" lhs ", " expr() ")"
     } else return lhs
 }
-function doIdent( type, name) {
+ function doIdent( type, name) {
     if(type ~ /^H.*/) {
        gen("arg = popSTACK();")
-       gen("if(!fpointerp(arg))invalid_argument(arg);");
-       gen(name " = TheFpointer(arg)->fp_pointer;")
+       gen("processFPTYPE(" type "," name ",arg);")
+       #gen("if(!fpointerp(arg))invalid_argument(arg);");
+       #gen(name " = TheFpointer(arg)->fp_pointer;")
     }
-    else if( "DWORD" == type || "UINT" == type || "DWORD32" == type ||
-              "COLORREF" == type) {
-       gen("arg = popSTACK();")
-       gen("check_uint(arg);")
-       gen(name " = I_to_uint32(arg);")
+    else if( "DWORD" == type||"UINT" == type||"ULONG" == type||"DWORD32" == type) {
+       gen(name " = I_to_uint32(check_uint(popSTACK()));")
     }
-    else if( "int" == type || "INT" == type || "LONG" == type || "LPARAM"==type){
-       gen("arg = popSTACK();")
-       gen("check_sint(arg);")
-       gen(name " = I_to_sint32(arg);")
+    else if( "int" == type || "INT" == type ||"WORD" == type || "LONG" == type || "LPARAM"==type){
+       gen(name " = I_to_sint32(check_sint(popSTACK()));")
     }
     else if( "LPSTR" == type || "LPCSTR" == type) {
        gen("arg = popSTACK();")
@@ -335,13 +309,14 @@ function doIdent( type, name) {
     }
     else if(type ~ /^LPC.*/) {
        sub("^LPC","",type)
-       gen("arg0 = popSTACK();")
-       gen("process"type"("name",arg0);")
+       gen("process"type"("name",popSTACK());")
     }
     else if(type ~ /^LP.*/) {
        sub("^LP","",type)
-       gen("arg0 = popSTACK();")
-       gen("process"type"("name",arg0);")
+       gen("process"type"("name",popSTACK());")
+    }
+    else if(type == "COLORREF") {
+       gen("process"type"("name",popSTACK());")
     }
     else
     {
@@ -364,19 +339,19 @@ function doIdentDecl( e,n,i,a) {
    else if( e ~ /_P$/){
       sub("_P$","",e)
       gen(e "* " n " = alloca(sizeof("e"));")
-      gen("object arg0 = 0;")
+      #gen("object arg0 = 0;")
       a[i] = "process"e"("n",arg0);"
    }
    else if(e ~ /^LPC.*/ && e !~ /STR/) {
       sub("^LPC","",e)
-      gen(e "* " n " = alloca(sizeof("e"));")
-      gen("object arg0 = 0;")
+      gen(e "* " n ";// = alloca(sizeof("e"));")
+      #gen("object arg0 = 0;")
       a[i] = "process"e"("n",arg0);"
    }
    else if(e ~ /^LP.*/ && e !~ /STR/) {
       sub("^LP","",e)
-      gen(e "* " n " = alloca(sizeof("e"));")
-      gen("object arg0 = 0;")
+      gen(e "* " n ";// = alloca(sizeof("e"));")
+      #gen("object arg0 = 0;")
       a[i] = "process"e"("n",arg0);"
    }
    else

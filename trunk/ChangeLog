@@ -1,0 +1,26 @@
+2009-07-31  Reini Urban  <rurban@x-ray.at>
+
+	* func.awk: revised error, colorref, doAtom, doIdent. Still broken though.
+	* local.c (do_GDI_ERROR): renamed from GDI_ERROR
+	* funcs-msimg.{c,h}, missing.h: added MSGIMG32 functions
+	AlphaBlend  GradientFill TransparentBlt. 
+        GetDCBrushColor GetDCPenColor still broken in libgdi32.a
+	* funcs-prob.c: added all missing GDI funcs from gdi.diff:
+	AddFontMemResourceEx AddFontResourceExA AddFontResourceExW ColorCorrectPalette 
+	GetEnhMetaFileBits GetFontUnicodeRanges GetGlyphIndicesA GetGlyphIndicesW GetGlyphOutlineA
+	GetGlyphOutlineW GetKerningPairsA GetKerningPairsW GetRandomRgn 
+	RemoveFontMemResourceEx RemoveFontResourceExA RemoveFontResourceExW SetLayout
+	* funcs-prob.c: Added in-active implementation of yet undeclared functions: 
+	GetTextExtentExPointI DeviceCapabilitiesExA DeviceCapabilitiesExW GetRelAbs
+	SetRelAbs SelectBrushLocal SelectFontLocal GetFontResourceInfo GetFontResourceInfoW
+	* gdi-doc.lisp: new test version for doc-strings. Will be created automatically
+	* test.tst: added
+
+2009-07-29  Reini Urban  <rurban@x-ray.at>
+
+	* funcs-*.c: Remove all duplicate wrong processSTRUCT calls.
+	Remove first T return values on success.
+
+2009-07-28  Reini Urban  <rurban@x-ray.at>
+
+	Uploaded to http://code.google.com/p/clisp-gdi/
