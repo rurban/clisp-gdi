@@ -9,11 +9,13 @@
      Dan Stanger 4/9/02
    Changed to MODERN (case sensitive) and make it work under clisp-2.39
      Reini Urban 2006-08-13
-   Checked all compiler warnings, modprep fixes (cs-modprep.patch), several 
-   new functions and added documentation
-     Reini Urban 2009-07-14
+   Checked all compiler warnings, modprep fixes (cs-modprep.patch), 
+   removed T return values on success, changed most new functions,
+   added documentation, published at http://code.google.com/p/clisp-gdi/
+     Reini Urban 2009-07
 
-  ../src/lndir ../modules/gdi gdi; make all -C gdi; rm -rf full+gdi; CLISP_LINKKIT=. MAKE=make ./clisp-link add base full+gdi gdi
+  ../src/lndir ../modules/gdi gdi; make all -C gdi
+  rm -rf full+gdi; CLISP_LINKKIT=. MAKE=make ./clisp-link add base full+gdi gdi
 */
 #define NO_STRICT
 #define WIN32_LEAN_AND_MEAN
@@ -228,7 +230,6 @@ DEFUN( GDI:GetIDC, h)
   mv_count=1;
   return;
 }
- 
 DEFUN( GDI:MakeFPointer, h)
 {
   /* This cast assumes that sizeof(void*)==sizeof(uint32) */
@@ -248,42 +249,3 @@ DEFUN( GDI:MessageLoop,)
   return;
 }
 
-// Retrieve the status of the specified virtual key at the time the last
-// keyboard message was retrieved from the message queue.
-DEFUN( GDI:GetKeyState, int0)
-{
-  object arg;
-  int int0, int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  begin_system_call();
-  int1 = GetKeyState(int0);
-  end_system_call();
-  value1 = ((int1 & 0x8000) >> 15) ? T :  NIL;   // up or down
-  value2 = (int1 & 0x0001) ? T : NIL;            // toggled or not
-  value3 = sint32_to_I(int1);                    // the whole
-  mv_count=3;
-  return;
-}
-// from array.c
-extern object allocate_bit_vector_0 (uintL len);
-// Returns bivector of size 256 with the status of the 256 virtual keys.
-// The index in the array is the virtual key code. If the value 
-// is true, that key is pressed.
-DEFUN( GDI:GetKeyboardState,)
-{
-  int i;
-  BYTE keys[256];
-  object newvec;
-  begin_system_call();
-  GetKeyboardState(keys);
-  end_system_call();
-  newvec = allocate_bit_vector_0(256);
-  for (i=0; i < 256; i++) {
-      if (keys[i] & 128)
-          TheSbvector(newvec)->data[i/8] |= bit((~i) % 8);
-  }
-  VALUES1(newvec);
-  return;
-}

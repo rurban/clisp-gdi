@@ -27,8 +27,8 @@ all : gdi.o gdi.fas
 gdi.fas : gdi.lisp
 	$(CLISP) -c gdi.lisp
 
-gdi.c : gdi.m local.c funcs-ok.c funcs-rest.c funcs-prob.c funcs-count.c funcs-out.c
-	cat gdi.m local.c funcs-ok.c funcs-rest.c funcs-prob.c  funcs-count.c funcs-out.c >gdi.mm
+gdi.c : gdi.m local.c funcs-ok.c funcs-rest.c funcs-prob.c funcs-count.c funcs-out.c funcs-msimg.c
+	cat gdi.m local.c funcs-ok.c funcs-rest.c funcs-prob.c  funcs-count.c funcs-out.c funcs-msimg.c >gdi.mm
 	$(CLISP) $(MODPREP) gdi.mm gdi.c
 
 #grep -v "\#line" gdi.mmm > gdi.c

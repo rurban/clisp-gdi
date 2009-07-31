@@ -2,14 +2,12 @@
   (:modern t) (:use #:cl)
   (:documentation "The GDI module provides a 'modern', i.e. case-sensitive 
 and case-inverted interface to all Windows gdi32.dll functions, structs and constants.
-Most functions return T/nil as first value, the function return value or 
-the error number as second value.
 
-All int, DWORD, WORD, LONG, UINT, LPARAM arguments are mapped to
-direct integer types, all strings, pointers and handles are converted
-to foreign-pointers, some known structs are returned as structs, 
-the rest as foreign-pointers.
-")
+All int, DWORD, WORD, LONG, UINT, LPARAM arguments are mapped to direct integer types, 
+all in-arg and return values of S8 and S16 (wide) strings are converted automatically,
+integer and void arrays are converted to bitvectors,
+some known structs are returned as structs, 
+the rest of pointers and handles are converted to foreign-pointers")
   (:export
    POINT POINT-FLOAT RECT *white* *black* pixarray-1-element-type 
    pixarray-4-element-type pixarray-8-element-type pixarray-16-element-type
@@ -17,7 +15,7 @@ the rest as foreign-pointers.
    make-point make-point-float make-logfont make-rgb make-textmetric make-iconinfo
    make-createstruct make-wndclass add-callbacks remove-callback *current-event*
    bitmap-image handle-textmetric max-char-ascent max-char-descent
-   GetIDC MakeFPointer MessageLoop GetKeyState GetKeyboardState
+   GetIDC MakeFPointer MessageLoop *last-error*
    ; constants
    SM_CXSCREEN SM_CYSCREEN SM_CXVSCROLL SM_CYHSCROLL SM_CYCAPTION
    SM_CXBORDER SM_CYBORDER SM_CXDLGFRAME SM_CXFIXEDFRAME SM_CYDLGFRAME
@@ -407,11 +405,24 @@ GetDIBits GetGlyphOutlineA GetGlyphOutlineW GetTextExtentExPointA
 GetTextExtentExPointW MaskBlt PatBlt Pie PlgBlt RoundRect ScaleViewportExtEx
 ScaleWindowExtEx SetDIBits SetDIBitsToDevice StretchBlt StretchDIBits
 TabbedTextOutA TabbedTextOutW SearchPathA SearchPathW
-SetCursor GetCursor GetCursorPos SetCursorPos GetCursorInfo #|GetDCPenColor|#
-SetDCPenColor #|GetDCBrushColor|# SetDCBrushColor GetWindowDC GetDCEx
+   ; new since 2009-07-21:
+SetCursor GetCursor GetCursorPos SetCursorPos GetCursorInfo 
+SetDCPenColor SetDCBrushColor GetDCEx GetWindowDC GetKeyState GetKeyboardState
+   ; new since 2009-07-31:
+AddFontMemResourceEx AddFontResourceExA AddFontResourceExW ColorCorrectPalette 
+GetEnhMetaFileBits GetFontUnicodeRanges GetGlyphIndicesA GetGlyphIndicesW GetGlyphOutlineA
+GetGlyphOutlineW GetKerningPairsA GetKerningPairsW GetRandomRgn 
+RemoveFontMemResourceEx RemoveFontResourceExA RemoveFontResourceExW SetLayout
+   ; undeclared:
+#| GetTextExtentExPointI DeviceCapabilitiesExA DeviceCapabilitiesExW GetRelAbs SetRelAbs
+SelectBrushLocal SelectFontLocal GetFontResourceInfo GetFontResourceInfoW |#
+   ; msimg32:
+AlphaBlend GetDCBrushColor GetDCPenColor GradientFill TransparentBlt 
 ))
-;;; ERROR deleted manually from above
-;;; GetDCPenColor and GetDCBrushColor are buggy in the cygwin w32api-3.13-1 package
+;;; ERROR deleted manually from above.
+;;; GetDCPenColor and GetDCBrushColor are buggy in the cygwin w32api-3.13-1 package.
+;;; GetTextExtentExPointI et al are defined in libgdi32.a and gdi32.dll but 
+;;; are not declared in the public headers
 
 (in-package "GDI")
 
@@ -2096,6 +2107,8 @@ SetDCPenColor #|GetDCBrushColor|# SetDCBrushColor GetWindowDC GetDCEx
 
 (defun bitmap-image (&rest r)(declare (ignore r)) t)
 
+; yet unimplemented. set in C
+(defvar *last-error* nil)
 ; I am not sure if this is needed, it is from the mac implementation
 (defvar *current-event* nil)
 ; If we switch to a fixnum for this, it will be faster
@@ -2121,19 +2134,13 @@ SetDCPenColor #|GetDCBrushColor|# SetDCBrushColor GetWindowDC GetDCEx
    (remhash (cons hwnd message-id) *functions*))
 
 (defun handle-textmetric (hfont)
-  (let* ((hdc (multiple-value-bind (retval h) (GDI::GetDC nil)
-                 (if retval h (error "GetDC ~S" h))))
+  (let* ((hdc (GDI::GetDC nil))
          (tm (make-textmetric))
-         (hOldFont (multiple-value-bind (retval h)
-                  (GDI::SelectObject hdc hfont)
-                  (if retval h (error "SelectObject ~S" h)))))
-     (multiple-value-bind (retval h)
-        (GDI::GetTextMetricsA hdc tm)
-        (unless retval (error "GetTextMetricsA ~S" h)))
-     (multiple-value-bind (retval h)
-        (GDI::SelectObject hdc hOldFont)
-        (if retval h (error "SelectObject ~S" h)))
-       tm))
+         (hOldFont (if hdc (GDI::SelectObject hdc hfont) (error "GetDC ~S" GDI:*last-error*))))
+     (if (null hOldFont) (error "SelectObject ~S" GDI:*last-error*))
+     (if (null (GDI::GetTextMetricsA hdc tm)) (error "GetTextMetricsA ~S" GDI:*last-error*))
+     (GDI::SelectObject hdc hOldFont)
+     tm))
 
 (defun max-char-ascent (hfont)
    (TEXTMETRIC-tmascent (handle-textmetric hfont)))

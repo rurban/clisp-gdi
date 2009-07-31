@@ -1,13 +1,13 @@
-This module is a interface to gdi-modern, the lowest level
+This module is a interface to gdi, the lowest level
 ms windows graphics api. It is a work in progress,
-and is copyright Dan Stanger 2002.
+and is copyright Dan Stanger 2002 and Reini Urban 2006-2009.
 It is licensed under the LGPL and all rights assigned
 to the Free Software Foundation.
 There are many places to learn about the gdi.  The wine
 web site has some links to web sites about it.
-This was the first gdi program I ever wrote.
 
 This is the modern version of gdi, i.e. case-sensitive with proper caps.
+The repo is at http://code.google.com/p/clisp-gdi/
 
 WARNING: DONT regenerate any code without
 thinking very carefully.  All the c files were hand edited,
@@ -19,29 +19,35 @@ instead of TheAsciz.
 
 Todo:
 
+objdump -t /lib/w32api/libgdi32.a |\
+  perl -alne 'if (/__imp__/) { $_=$F[@F-1]; s/__imp__//; s/@\d+//; print;}' |\
+  sort > gdi32.syms
+perl -pe's/\S+\s+(\S+)\(.*/\1/' *.h| sort > funcs.syms
+diff -0u gdi32.syms funcs.syms |grep -v @@ > gdi.diff
+for f in $(egrep -- "^-[A-Z]" gdi.diff|cut -c2-)
+do grep $f /usr/include/w32api/wingdi.h; done
+
 Fix warnings.
-Fix modprep to enable -modern builds.
 Test existing code.
 Add more message handling code.
-Finish the process*, output* routines.
+Check the necessity of the process*, output* routines.
 Write more examples, and documentation.
 
 To install:
-move the gdi directory below your cygwin build directory
-for example
-/cygdrive/e/clisp-2.28/cygwin/gdi
-in gdi
-compile gdi.lisp with:
+Copy the gdi directory to clisp-x.y/modules/gdi and 
+configure with --with-modules=gdi, or
+copy gdi under the build dir and add gdi to the MODULES line in build/Makefile
+Compile gdi.lisp with:
 clisp -q -c gdi.lisp
 make the object gdi.o
 make
 cd ..
-echo rm -rf gdi+base;./clisp-link add-module-set gdi . gdi+base
+echo rm -rf gdi+base;./clisp-link add gdi . gdi+base
 cd gdi+base
 cp * /usr/local/lib/clisp/base
 
 now clisp should execute with the gdi module, and *features* should
-have gdi in it.
+have :GDI in it.
 
 Notes:
 Some functions which in c would return a struct return multiple values

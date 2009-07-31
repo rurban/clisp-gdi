@@ -9,26 +9,16 @@ DEFUN( GDI:AbortDoc, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = AbortDoc(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("AbortDoc");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -39,25 +29,16 @@ DEFUN( GDI:AbortPath, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = AbortPath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("AbortPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -75,20 +56,12 @@ DEFUN( GDI:AddAtomA, lpcstr)
     atom = AddAtomA(lpcstr);
     end_system_call();
     if(!atom){
-      DWORD e;
-      begin_system_call();
-      e = GetLastError();
-      end_system_call();
-      value1 = NIL;
-      value2 = uint32_to_I(e);
-      mv_count=2;
+      do_GDI_ERROR("AddAtomA");
     }
     else
     {
-      value1 = T;
-      //value2 = allocate_fpointer((FOREIGN)atom);
-      value2 = uint32_to_I(atom);
-      mv_count=2;
+      //value1 = allocate_fpointer((FOREIGN)atom);
+      VALUES1(uint32_to_I(atom));
     }
   });
   return;
@@ -107,20 +80,11 @@ DEFUN( GDI:AddAtomW, lpcwstr)
   atom = AddAtomW(lpcwstr);
   end_system_call();
   if(!atom){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("AddAtomW");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(atom);
-    //value2 = allocate_fpointer((FOREIGN)&atom);
-    mv_count=2;
+    VALUES1(uint32_to_I(atom)); //value2 = allocate_fpointer((FOREIGN)&atom));
   }
   return;
 }
@@ -131,25 +95,16 @@ DEFUN( GDI:BeginPath, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = BeginPath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("BeginPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -160,25 +115,16 @@ DEFUN( GDI:CancelDC, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = CancelDC(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CancelDC");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -189,26 +135,16 @@ DEFUN( GDI:CloseEnhMetaFile, hdc)
   object arg;
   HENHMETAFILE henhmetafile;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   henhmetafile = CloseEnhMetaFile(hdc);
   end_system_call();
   if(NULL ==henhmetafile){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CloseEnhMetaFile");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)henhmetafile);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)henhmetafile));
   }
   return;
 }
@@ -219,25 +155,16 @@ DEFUN( GDI:CloseFigure, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = CloseFigure(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CloseFigure");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -248,145 +175,96 @@ DEFUN( GDI:CloseMetaFile, hdc)
   object arg;
   HMETAFILE hmetafile;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   hmetafile = CloseMetaFile(hdc);
   end_system_call();
   if(NULL ==hmetafile){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CloseMetaFile");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hmetafile);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hmetafile));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:ColorMatchToTarget, hdc hdc0 dword)
+// was disabled on older cygwin
+DEFUN( GDI:ColorMatchToTarget, hdc hdcTarget uiAction)
+/* uiAction - one of the CS_ values: CS_ENABLE, CS_DISABLE, CS_DELETE_TRANSFORM
+ */
 {
-#ifdef __CYGWIN__
-  error(error_condition,GETTEXT("ColorMatchToTarget not supported under cygwin"));
-#else
   object arg;
   BOOL bool0;
   HDC hdc;
-  HDC hdc0;
-  DWORD dword;
-  dword = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc0 = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  HDC hdcTarget;
+  DWORD uiAction;
+  uiAction = I_to_uint32(check_uint(popSTACK()));
+  getHDC(hdcTarget,arg);
+  getHDC(hdc,arg);
   begin_system_call();
-  bool0 = ColorMatchToTarget(hdc,hdc0,dword);
+  bool0 = ColorMatchToTarget(hdc,hdcTarget,uiAction);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("ColorMatchToTarget");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
-#endif
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CombineRgn, hrgn hrgn0 hrgn1 int0)
+DEFUN( GDI:CombineRgn, hrgnDest hrgnSrc1 hrgnSrc2 fnCombineMode)
+/* hrgnDest must exist before CombineRgn is called.
+   fnCombineMode - one of the RGN_ values */
 {
   object arg;
   int int1;
-  HRGN hrgn;
-  HRGN hrgn0;
-  HRGN hrgn1;
-  int int0;
+  HRGN hrgnDest,hrgnSrc1,hrgnSrc2;
+  int fnCombineMode;
+  fnCombineMode = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  processFPTYPE(HRGN,hrgnSrc2,arg);
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn1 = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HRGN,hrgnSrc1,arg);
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn0 = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HRGN,hrgnDest,arg);
+
   begin_system_call();
-  int1 = CombineRgn(hrgn,hrgn0,hrgn1,int0);
+  int1 = CombineRgn(hrgnDest,hrgnSrc1,hrgnSrc2,fnCombineMode);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CombineRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CreateCompatibleBitmap, hdc int0 int1)
+DEFUN( GDI:CreateCompatibleBitmap, hdc nWidth nHeight)
 {
   object arg;
   HBITMAP hbitmap;
   HDC hdc;
-  int int0;
-  int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int nWidth,nHeight;
+  nHeight = I_to_sint32(check_sint(popSTACK()));
+  nWidth = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
+
   begin_system_call();
-  hbitmap = CreateCompatibleBitmap(hdc,int0,int1);
+  hbitmap = CreateCompatibleBitmap(hdc,nWidth,nHeight);
   end_system_call();
   if(NULL ==hbitmap){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateCompatibleBitmap");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hbitmap);
-    mv_count=2;
+    value1 = allocate_fpointer((FOREIGN)hbitmap);
+    /* TODO: Attach a DeleteObject finalizer to it */
+    mv_count=1;
   }
   return;
 }
@@ -397,138 +275,84 @@ DEFUN( GDI:CreateCompatibleDC, hdc)
   object arg;
   HDC hdc0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   hdc0 = CreateCompatibleDC(hdc);
   end_system_call();
   if(NULL ==hdc0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateCompatibleDC");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hdc0);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hdc0));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CreateDIBPatternBrush, hglobal uint)
+DEFUN( GDI:CreateDIBPatternBrush, hglobal fuColorSpec)
+/* fuColorSpec - one of the DIB_ values */
 {
   object arg;
   HBRUSH hbrush;
   HGLOBAL hglobal;
-  UINT uint;
-  uint = I_to_uint32(check_uint(popSTACK()));
+  UINT fuColorSpec;
+  fuColorSpec = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hglobal = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HGLOBAL,hglobal,arg);
   begin_system_call();
-  hbrush = CreateDIBPatternBrush(hglobal,uint);
+  hbrush = CreateDIBPatternBrush(hglobal,fuColorSpec);
   end_system_call();
   if(NULL ==hbrush){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateDIBPatternBrush");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hbrush);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hbrush));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CreateDiscardableBitmap, hdc int0 int1)
+DEFUN( GDI:CreateDiscardableBitmap, hdc nWidth nHeight)
+/* For Win32-based applications, use the CreateCompatibleBitmap function instead. */
 {
   object arg;
   HBITMAP hbitmap;
   HDC hdc;
-  int int0;
-  int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int nWidth, nHeight;
+  nHeight = I_to_sint32(check_sint(popSTACK()));
+  nWidth  = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
-  hbitmap = CreateDiscardableBitmap(hdc,int0,int1);
+  hbitmap = CreateDiscardableBitmap(hdc,nWidth,nHeight);
   end_system_call();
   if(NULL ==hbitmap){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateDiscardableBitmap");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hbitmap);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hbitmap));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CreateEllipticRgn, int0 int1 int2 int3)
+DEFUN( GDI:CreateEllipticRgn, nLeftRect nTopRect nRightRect nBottomRect)
 {
   object arg;
   HRGN hrgn;
-  int int0;
-  int int1;
-  int int2;
-  int int3;
-  arg = popSTACK();
-  check_sint(arg);
-  int3 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int2 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int nLeftRect,nTopRect,nRightRect,nBottomRect;
+  nBottomRect = I_to_sint32(check_sint(popSTACK()));
+  nRightRect  = I_to_sint32(check_sint(popSTACK()));
+  nTopRect    = I_to_sint32(check_sint(popSTACK()));
+  nLeftRect   = I_to_sint32(check_sint(popSTACK()));
   begin_system_call();
-  hrgn = CreateEllipticRgn(int0,int1,int2,int3);
+  hrgn = CreateEllipticRgn(nLeftRect,nTopRect,nRightRect,nBottomRect);
   end_system_call();
   if(NULL ==hrgn){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateEllipticRgn");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hrgn);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hrgn));
   }
   return;
 }
@@ -539,58 +363,41 @@ DEFUN( GDI:CreateHalftonePalette, hdc)
   object arg;
   HPALETTE hpalette;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   hpalette = CreateHalftonePalette(hdc);
   end_system_call();
   if(NULL ==hpalette){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateHalftonePalette");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hpalette);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hpalette));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CreateHatchBrush, int0 colorref)
+DEFUN( GDI:CreateHatchBrush, fnStyle colorref)
+/* fnStyle is one of HS_BDIAGONAL, HS_CROSS, HS_DIAGCROSS, HS_FDIAGONAL, HS_HORIZONTAL
+ *   HS_VERTICAL.
+ * Returns a handle to the logical brush.
+ */
 {
   object arg;
   HBRUSH hbrush;
-  int int0;
+  int fnStyle;
   COLORREF colorref;
-  colorref = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  colorref = processCOLORREF(popSTACK());
+  fnStyle = I_to_sint32(check_sint(popSTACK()));
   begin_system_call();
-  hbrush = CreateHatchBrush(int0,colorref);
+  hbrush = CreateHatchBrush(fnStyle,colorref);
   end_system_call();
   if(NULL ==hbrush){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateHatchBrush");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hbrush);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hbrush));
   }
   return;
 }
@@ -608,97 +415,55 @@ DEFUN( GDI:CreatePatternBrush, hbitmap)
   hbrush = CreatePatternBrush(hbitmap);
   end_system_call();
   if(NULL ==hbrush){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreatePatternBrush");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hbrush);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hbrush));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CreatePen, int0 int1 colorref)
+DEFUN( GDI:CreatePen, fnPenStyle nWidth colorref)
 {
   object arg;
   HPEN hpen;
-  int int0;
-  int int1;
+  int fnPenStyle, nWidth;
   COLORREF colorref;
-  colorref = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  colorref = processCOLORREF(popSTACK());
+  nWidth = I_to_sint32(check_sint(popSTACK()));
+  fnPenStyle = I_to_sint32(check_sint(popSTACK()));
   begin_system_call();
-  hpen = CreatePen(int0,int1,colorref);
+  hpen = CreatePen(fnPenStyle, nWidth, colorref);
   end_system_call();
   if(NULL ==hpen){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreatePen");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hpen);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hpen));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:CreateRectRgn, int0 int1 int2 int3)
+DEFUN( GDI:CreateRectRgn, nLeftRect nTopRect nRightRect nBottomRect)
 {
   object arg;
   HRGN hrgn;
-  int int0;
-  int int1;
-  int int2;
-  int int3;
-  arg = popSTACK();
-  check_sint(arg);
-  int3 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int2 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int nLeftRect,nTopRect,nRightRect,nBottomRect;
+  nBottomRect = I_to_sint32(check_sint(popSTACK()));
+  nRightRect  = I_to_sint32(check_sint(popSTACK()));
+  nTopRect    = I_to_sint32(check_sint(popSTACK()));
+  nLeftRect   = I_to_sint32(check_sint(popSTACK()));
   begin_system_call();
-  hrgn = CreateRectRgn(int0,int1,int2,int3);
+  hrgn = CreateRectRgn(nLeftRect,nTopRect,nRightRect,nBottomRect);
   end_system_call();
   if(NULL ==hrgn){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateRectRgn");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hrgn);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hrgn));
   }
   return;
 }
@@ -709,24 +474,16 @@ DEFUN( GDI:CreateSolidBrush, colorref)
   object arg;
   HBRUSH hbrush;
   COLORREF colorref;
-  colorref = I_to_uint32(check_uint(popSTACK()));
+  colorref = processCOLORREF(popSTACK());
   begin_system_call();
   hbrush = CreateSolidBrush(colorref);
   end_system_call();
   if(NULL ==hbrush){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("CreateSolidBrush");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hbrush);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hbrush));
   }
   return;
 }
@@ -738,24 +495,16 @@ DEFUN( GDI:DeleteColorSpace, hcolorspace)
   BOOL bool0;
   HCOLORSPACE hcolorspace;
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hcolorspace = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HCOLORSPACE,hcolorspace,arg)
   begin_system_call();
   bool0 = DeleteColorSpace(hcolorspace);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("DeleteColorSpace");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -766,25 +515,16 @@ DEFUN( GDI:DeleteDC, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = DeleteDC(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("DeleteDC");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -796,24 +536,16 @@ DEFUN( GDI:DeleteEnhMetaFile, henhmetafile)
   BOOL bool0;
   HENHMETAFILE henhmetafile;
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  henhmetafile = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HENHMETAFILE,henhmetafile,arg)
   begin_system_call();
   bool0 = DeleteEnhMetaFile(henhmetafile);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("DeleteEnhMetaFile");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -825,24 +557,16 @@ DEFUN( GDI:DeleteMetaFile, hmetafile)
   BOOL bool0;
   HMETAFILE hmetafile;
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hmetafile = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HMETAFILE,hmetafile,arg)
   begin_system_call();
   bool0 = DeleteMetaFile(hmetafile);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("DeleteMetaFile");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -854,196 +578,123 @@ DEFUN( GDI:DeleteObject, hgdiobj)
   BOOL bool0;
   HGDIOBJ hgdiobj;
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hgdiobj = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HGDIOBJ,hgdiobj,arg)
   begin_system_call();
   bool0 = DeleteObject(hgdiobj);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("DeleteObject");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
-DEFUN( GDI:Ellipse, hdc int0 int1 int2 int3)
+DEFUN( GDI:Ellipse, hdc nLeftRect nTopRect nRightRect nBottomRect)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
-  int int0;
-  int int1;
-  int int2;
-  int int3;
-  arg = popSTACK();
-  check_sint(arg);
-  int3 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int2 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int nLeftRect,nTopRect,nRightRect,nBottomRect;
+  nBottomRect = I_to_sint32(check_sint(popSTACK()));
+  nRightRect  = I_to_sint32(check_sint(popSTACK()));
+  nTopRect    = I_to_sint32(check_sint(popSTACK()));
+  nLeftRect   = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
-  bool0 = Ellipse(hdc,int0,int1,int2,int3);
+  bool0 = Ellipse(hdc,nLeftRect,nTopRect,nRightRect,nBottomRect);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("Ellipse");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
 DEFUN( GDI:EndDoc, hdc)
 {
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = EndDoc(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("EndDoc");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
 DEFUN( GDI:EndPage, hdc)
 {
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = EndPage(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("EndPage");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
 DEFUN( GDI:EndPath, hdc)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = EndPath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("EndPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
 DEFUN( GDI:EqualRgn, hrgn hrgn0)
 {
   object arg;
   BOOL bool0;
   HRGN hrgn;
   HRGN hrgn0;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn0 = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn = TheFpointer(arg)->fp_pointer;
+  processFPTYPE_fn(HRGN,hrgn0,popSTACK());
+  processFPTYPE_fn(HRGN,hrgn,popSTACK());
   begin_system_call();
   bool0 = EqualRgn(hrgn,hrgn0);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("EqualRgn");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
 DEFUN( GDI:EscapeCommFunction, handle dword)
 {
   object arg;
@@ -1052,149 +703,103 @@ DEFUN( GDI:EscapeCommFunction, handle dword)
   DWORD dword;
   dword = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  handle = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HANDLE,handle,arg)
   begin_system_call();
   bool0 = EscapeCommFunction(handle,dword);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("EscapeCommFunction");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:ExcludeClipRect, hdc int0 int1 int2 int3)
+DEFUN( GDI:ExcludeClipRect, hdc nLeftRect nTopRect nRightRect nBottomRect)
 {
   object arg;
   int int4;
   HDC hdc;
-  int int0;
-  int int1;
-  int int2;
-  int int3;
-  arg = popSTACK();
-  check_sint(arg);
-  int3 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int2 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int nLeftRect,nTopRect,nRightRect,nBottomRect;
+  nBottomRect = I_to_sint32(check_sint(popSTACK()));
+  nRightRect  = I_to_sint32(check_sint(popSTACK()));
+  nTopRect    = I_to_sint32(check_sint(popSTACK()));
+  nLeftRect   = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
-  int4 = ExcludeClipRect(hdc,int0,int1,int2,int3);
+  int4 = ExcludeClipRect(hdc,nLeftRect,nTopRect,nRightRect,nBottomRect);
   end_system_call();
   if(0 <=int4){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("ExcludeClipRect");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int4);
-    mv_count=2;
+    VALUES1(sint32_to_I(int4));
   }
   return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
-DEFUN( GDI:ExtFloodFill, hdc int0 int1 colorref uint)
+DEFUN( GDI:ExtFloodFill, hdc nXStart nYStart colorref fuFillType)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
-  int int0;
-  int int1;
+  int nXStart,nYStart;
   COLORREF colorref;
-  UINT uint;
-  uint = I_to_uint32(check_uint(popSTACK()));
-  colorref = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  UINT fuFillType;
+  fuFillType = I_to_uint32(check_uint(popSTACK()));
+  colorref = processCOLORREF(popSTACK());
+  nXStart = I_to_sint32(check_sint(popSTACK()));
+  nYStart = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
-  bool0 = ExtFloodFill(hdc,int0,int1,colorref,uint);
+  bool0 = ExtFloodFill(hdc,nXStart,nYStart,colorref,fuFillType);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("ExtFloodFill");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:ExtSelectClipRgn, hdc hrgn int0)
+DEFUN( GDI:ExtSelectClipRgn, hdc hrgn fnMode)
+/* Returns the symbols as described in the MSDN docs, not 0-3 */
 {
   object arg;
   int int1;
   HDC hdc;
   HRGN hrgn;
-  int int0;
+  int fnMode;
+  fnMode = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HRGN,hrgn,arg);
+  getHDC(hdc,arg);
   begin_system_call();
-  int1 = ExtSelectClipRgn(hdc,hrgn,int0);
+  int1 = ExtSelectClipRgn(hdc,hrgn,fnMode);
   end_system_call();
-  if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+  if(0 <=int1) {
+      //do_GDI_ERROR("ExtSelectClipRgn");
+      value1 = `GDI::ERROR`; /* value 0 */
+      mv_count=1;
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    // return the constants, not the int
+    // NULLREGION, SIMPLEREGION, COMPLEXREGION
+    if (int1 == 1)
+        value1 = `GDI::NULLREGION`;
+    else if (int1 == 2)
+        value1 = `GDI::SIMPLEREGION`;
+    else if (int1 == 3)
+        value1 = `GDI::COMPLEXREGION`;
+    else
+        VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -1205,25 +810,16 @@ DEFUN( GDI:FillPath, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = FillPath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("FillPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -1237,31 +833,19 @@ DEFUN( GDI:FillRgn, hdc hrgn hbrush)
   HRGN hrgn;
   HBRUSH hbrush;
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hbrush = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HBRUSH,hbrush,arg);
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HRGN,hrgn,arg);
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = FillRgn(hdc,hrgn,hbrush);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("FillRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1279,20 +863,11 @@ DEFUN( GDI:FindAtomA, lpcstr)
     atom = FindAtomA(lpcstr);
     end_system_call();
     if(0 ==atom){
-      DWORD e;
-      begin_system_call();
-      e = GetLastError();
-      end_system_call();
-      value1 = NIL;
-      value2 = uint32_to_I(e);
-      mv_count=2;
+        do_GDI_ERROR("FindAtomA");
     }
     else
     {
-      value1 = T;
-      //value2 = allocate_fpointer((FOREIGN)atom);
-      value2 = uint32_to_I(atom);
-      mv_count=2;
+      VALUES1(uint32_to_I(atom));
     }
   });
   return;
@@ -1311,20 +886,11 @@ DEFUN( GDI:FindAtomW, lpcwstr)
   atom = FindAtomW(lpcwstr);
   end_system_call();
   if(0 ==atom){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("FindAtomW");
   }
   else
   {
-    value1 = T;
-    //value2 = allocate_fpointer((FOREIGN)atom);
-    value2 = uint32_to_I(atom);
-    mv_count=2;
+    VALUES1(uint32_to_I(atom));
   }
   return;
 }
@@ -1335,183 +901,130 @@ DEFUN( GDI:FlattenPath, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = FlattenPath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("FlattenPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
-DEFUN( GDI:FloodFill, hdc int0 int1 colorref)
+DEFUN( GDI:FloodFill, hdc nXStart nYStart colorref)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
-  int int0;
-  int int1;
+  int nXStart,nYStart;
   COLORREF colorref;
-  colorref = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  colorref = processCOLORREF(popSTACK());
+  nYStart = I_to_sint32(check_sint(popSTACK()));
+  nXStart = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
-  bool0 = FloodFill(hdc,int0,int1,colorref);
+  bool0 = FloodFill(hdc,nXStart,nYStart,colorref);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("FloodFill");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:FrameRgn, hdc hrgn hbrush int0 int1)
+DEFUN( GDI:FrameRgn, hdc hrgn hbrush nWidth nHeight)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
   HRGN hrgn;
   HBRUSH hbrush;
-  int int0;
-  int int1;
+  int nWidth,nHeight;
+  nHeight = I_to_sint32(check_sint(popSTACK()));
+  nWidth = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
+  processFPTYPE(HBRUSH,hbrush,arg);
   arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hbrush = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HRGN,hrgn,arg);
+  getHDC(hdc,arg);
   begin_system_call();
-  bool0 = FrameRgn(hdc,hrgn,hbrush,int0,int1);
+  bool0 = FrameRgn(hdc,hrgn,hbrush,nWidth,nHeight);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("FrameRgn");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
-DEFUN( GDI:GdiSetBatchLimit, dword)
+DEFUN( GDI:GdiSetBatchLimit, dwLimit)
 {
   object arg;
   DWORD dword0;
-  DWORD dword;
-  dword = I_to_uint32(check_uint(popSTACK()));
+  DWORD dwLimit;
+  dwLimit = I_to_uint32(check_uint(popSTACK()));
   begin_system_call();
-  dword0 = GdiSetBatchLimit(dword);
+  dword0 = GdiSetBatchLimit(dwLimit);
   end_system_call();
   if(!dword0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GdiSetBatchLimit");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(dword0);
-    mv_count=2;
+    VALUES1(uint32_to_I(dword0));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
 DEFUN( GDI:GetArcDirection, hdc)
 {
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetArcDirection(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetArcDirection");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
 // untested - was never called
-// uninspected - compiles but code was not checked
+// fixed
+// TODO: return make-rgb, resp. outputCOLORREF
 DEFUN( GDI:GetBkColor, hdc)
 {
   object arg;
   COLORREF colorref;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   colorref = GetBkColor(hdc);
   end_system_call();
+  if(0 <=(int)colorref){
+    do_GDI_ERROR("GetBkColor");
+  }
+  else
+  {
+    VALUES1(sint32_to_I((int)colorref));
+  }
+  return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
@@ -1520,26 +1033,16 @@ DEFUN( GDI:GetBkMode, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetBkMode(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetBkMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1552,28 +1055,17 @@ DEFUN( GDI:GetClipRgn, hdc hrgn)
   HDC hdc;
   HRGN hrgn;
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HRGN,hrgn,arg);
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetClipRgn(hdc,hrgn);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetClipRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1584,26 +1076,16 @@ DEFUN( GDI:GetColorSpace, hdc)
   object arg;
   HANDLE handle;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   handle = GetColorSpace(hdc);
   end_system_call();
   if(NULL ==handle){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetColorSpace");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)handle);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)handle));
   }
   return;
 }
@@ -1616,26 +1098,16 @@ DEFUN( GDI:GetCurrentObject, hdc uint)
   HDC hdc;
   UINT uint;
   uint = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   hgdiobj = GetCurrentObject(hdc,uint);
   end_system_call();
   if(NULL ==hgdiobj){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetCurrentObject");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hgdiobj);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hgdiobj));
   }
   return;
 }
@@ -1646,26 +1118,16 @@ DEFUN( GDI:GetFontLanguageInfo, hdc)
   object arg;
   DWORD dword;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   dword = GetFontLanguageInfo(hdc);
   end_system_call();
   if(!dword){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetFontLanguageInfo");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(dword);
-    mv_count=2;
+    VALUES1(uint32_to_I(dword));
   }
   return;
 }
@@ -1676,26 +1138,16 @@ DEFUN( GDI:GetGraphicsMode, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetGraphicsMode(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetGraphicsMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1706,26 +1158,16 @@ DEFUN( GDI:GetMapMode, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetMapMode(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetMapMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1738,28 +1180,17 @@ DEFUN( GDI:GetMetaRgn, hdc hrgn)
   HDC hdc;
   HRGN hrgn;
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HRGN,hrgn,arg);
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetMetaRgn(hdc,hrgn);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetMetaRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1772,9 +1203,7 @@ DEFUN( GDI:GetNearestColor, hdc colorref)
   HDC hdc;
   COLORREF colorref;
   colorref = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   colorref0 = GetNearestColor(hdc,colorref);
   end_system_call();
@@ -1789,25 +1218,16 @@ DEFUN( GDI:GetNearestPaletteIndex, hpalette colorref)
   COLORREF colorref;
   colorref = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hpalette = TheFpointer(arg)->fp_pointer;
+  processFPTYPE(HPALETTE,hpalette,arg);
   begin_system_call();
   uint = GetNearestPaletteIndex(hpalette,colorref);
   end_system_call();
   if(!uint){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetNearestPaletteIndex");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(uint);
-    mv_count=2;
+    VALUES1(uint32_to_I(uint));
   }
   return;
 }
@@ -1825,19 +1245,11 @@ DEFUN( GDI:GetObjectType, hgdiobj)
   dword = GetObjectType(hgdiobj);
   end_system_call();
   if(!dword){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetObjectType");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(dword);
-    mv_count=2;
+    VALUES1(uint32_to_I(dword));
   }
   return;
 }
@@ -1850,15 +1262,9 @@ DEFUN( GDI:GetPixel, hdc int0 int1)
   HDC hdc;
   int int0;
   int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   colorref = GetPixel(hdc,int0,int1);
   end_system_call();
@@ -1870,26 +1276,16 @@ DEFUN( GDI:GetPixelFormat, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetPixelFormat(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetPixelFormat");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1900,26 +1296,16 @@ DEFUN( GDI:GetPolyFillMode, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetPolyFillMode(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetPolyFillMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1930,26 +1316,16 @@ DEFUN( GDI:GETROP2, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetROP2(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetROP2");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -1960,26 +1336,16 @@ DEFUN( GDI:GetStockObject, int0)
   object arg;
   HGDIOBJ hgdiobj;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int0 = I_to_sint32(check_sint(popSTACK()));
   begin_system_call();
   hgdiobj = GetStockObject(int0);
   end_system_call();
   if(NULL ==hgdiobj){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetStockObject");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hgdiobj);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hgdiobj));
   }
   return;
 }
@@ -1990,26 +1356,16 @@ DEFUN( GDI:GetStretchBltMode, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetStretchBltMode(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetStretchBltMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -2020,26 +1376,16 @@ DEFUN( GDI:GetSystemPaletteUse, hdc)
   object arg;
   UINT uint;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   uint = GetSystemPaletteUse(hdc);
   end_system_call();
   if(!uint){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetSystemPaletteUse");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(uint);
-    mv_count=2;
+    VALUES1(uint32_to_I(uint));
   }
   return;
 }
@@ -2050,26 +1396,16 @@ DEFUN( GDI:GetTextAlign, hdc)
   object arg;
   UINT uint;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   uint = GetTextAlign(hdc);
   end_system_call();
   if(!uint){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetTextAlign");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(uint);
-    mv_count=2;
+    VALUES1(uint32_to_I(uint));
   }
   return;
 }
@@ -2080,26 +1416,16 @@ DEFUN( GDI:GetTextCharacterExtra, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetTextCharacterExtra(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetTextCharacterExtra");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -2110,26 +1436,16 @@ DEFUN( GDI:GetTextCharset, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = GetTextCharset(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GetTextCharset");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -2140,9 +1456,7 @@ DEFUN( GDI:GetTextColor, hdc)
   object arg;
   COLORREF colorref;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   colorref = GetTextColor(hdc);
   end_system_call();
@@ -2159,22 +1473,14 @@ DEFUN( GDI:GlobalAddAtomA, lpcstr)
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     atom = GlobalAddAtomA(lpcstr);
-    end_system_call();
-    if(0 ==atom){
-      DWORD e;
-      begin_system_call();
-      e = GetLastError();
-      end_system_call();
-      value1 = NIL;
-      value2 = uint32_to_I(e);
-      mv_count=2;
+  end_system_call();
+  if(0 ==atom){
+    do_GDI_ERROR("GlobalAddAtomA");
     }
     else
     {
-      value1 = T;
-      //value2 = allocate_fpointer((FOREIGN)atom);
-      value2 = uint32_to_I(atom);
-      mv_count=2;
+      // allocate_fpointer((FOREIGN)atom);
+      VALUES1(uint32_to_I(atom));
     }
   });
   return;
@@ -2193,20 +1499,12 @@ DEFUN( GDI:GlobalAddAtomW, lpcwstr)
   atom = GlobalAddAtomW(lpcwstr);
   end_system_call();
   if(0 ==atom){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GlobalAddAtomW");
   }
   else
   {
-    value1 = T;
-    //value2 = allocate_fpointer((FOREIGN)atom);
-    value2 = uint32_to_I(atom);
-    mv_count=2;
+    //allocate_fpointer((FOREIGN)atom);
+    VALUES1(uint32_to_I(atom));
   }
   return;
 }
@@ -2222,22 +1520,14 @@ DEFUN( GDI:GlobalFindAtomA, lpcstr)
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     atom = GlobalFindAtomA(lpcstr);
-    end_system_call();
-    if(0 ==atom){
-      DWORD e;
-      begin_system_call();
-      e = GetLastError();
-      end_system_call();
-      value1 = NIL;
-      value2 = uint32_to_I(e);
-      mv_count=2;
+  end_system_call();
+  if(0 ==atom){
+    do_GDI_ERROR("GlobalFindAtomA");
     }
     else
     {
-      value1 = T;
-      //value2 = allocate_fpointer((FOREIGN)atom);
-      value2 = uint32_to_I(atom);
-      mv_count=2;
+      //allocate_fpointer((FOREIGN)atom);
+      VALUES1(uint32_to_I(atom));
     }
   });
   return;
@@ -2256,20 +1546,12 @@ DEFUN( GDI:GlobalFindAtomW, lpcwstr)
   atom = GlobalFindAtomW(lpcwstr);
   end_system_call();
   if(0 ==atom){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("GlobalFindAtomW");
   }
   else
   {
-    value1 = T;
-    //value2 = allocate_fpointer((FOREIGN)atom);
-    value2 = uint32_to_I(atom);
-    mv_count=2;
+    //allocate_fpointer((FOREIGN)atom);
+    VALUES1(uint32_to_I(atom));
   }
   return;
 }
@@ -2284,38 +1566,20 @@ DEFUN( GDI:IntersectClipRect, hdc int0 int1 int2 int3)
   int int1;
   int int2;
   int int3;
-  arg = popSTACK();
-  check_sint(arg);
-  int3 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int2 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int3 = I_to_sint32(check_sint(popSTACK()));
+  int2 = I_to_sint32(check_sint(popSTACK()));
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int4 = IntersectClipRect(hdc,int0,int1,int2,int3);
   end_system_call();
   if(0 <=int4){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("IntersectClipRect");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int4);
-    mv_count=2;
+    VALUES1(sint32_to_I(int4));
   }
   return;
 }
@@ -2330,25 +1594,16 @@ DEFUN( GDI:InvertRgn, hdc hrgn)
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = InvertRgn(hdc,hrgn);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("InvertRgn");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2361,31 +1616,18 @@ DEFUN( GDI:LineTo, hdc int0 int1)
   HDC hdc;
   int int0;
   int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = LineTo(hdc,int0,int1);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("LineTo");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2401,21 +1643,13 @@ DEFUN( GDI:LoadCursorFromFileA, lpcstr)
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     hcursor = LoadCursorFromFileA(lpcstr);
-    end_system_call();
-    if(NULL ==hcursor){
-      DWORD e;
-      begin_system_call();
-      e = GetLastError();
-      end_system_call();
-      value1 = NIL;
-      value2 = uint32_to_I(e);
-      mv_count=2;
+  end_system_call();
+  if(NULL ==hcursor){
+    do_GDI_ERROR("LoadCursorFromFileA");
     }
     else
     {
-      value1 = T;
-      value2 = allocate_fpointer((FOREIGN)hcursor);
-      mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hcursor));
     }
   });
   return;
@@ -2434,19 +1668,11 @@ DEFUN( GDI:LoadCursorFromFileW, lpcwstr)
   hcursor = LoadCursorFromFileW(lpcwstr);
   end_system_call();
   if(NULL ==hcursor){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("LoadCursorFromFileW");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hcursor);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hcursor));
   }
   return;
 }
@@ -2459,32 +1685,18 @@ DEFUN( GDI:OffsetClipRgn, hdc int0 int1)
   HDC hdc;
   int int0;
   int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int2 = OffsetClipRgn(hdc,int0,int1);
   end_system_call();
   if(0 <=int2){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("OffsetClipRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int2);
-    mv_count=2;
+    VALUES1(sint32_to_I(int2));
   }
   return;
 }
@@ -2497,12 +1709,8 @@ DEFUN( GDI:OffsetRgn, hrgn int0 int1)
   HRGN hrgn;
   int int0;
   int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hrgn = TheFpointer(arg)->fp_pointer;
@@ -2510,19 +1718,11 @@ DEFUN( GDI:OffsetRgn, hrgn int0 int1)
   int2 = OffsetRgn(hrgn,int0,int1);
   end_system_call();
   if(0 <=int2){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("OffsetRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int2);
-    mv_count=2;
+    VALUES1(sint32_to_I(int2));
   }
   return;
 }
@@ -2537,25 +1737,16 @@ DEFUN( GDI:PaintRgn, hdc hrgn)
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = PaintRgn(hdc,hrgn);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("PaintRgn");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2566,26 +1757,16 @@ DEFUN( GDI:PathToRegion, hdc)
   object arg;
   HRGN hrgn;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   hrgn = PathToRegion(hdc);
   end_system_call();
   if(NULL ==hrgn){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("PathToRegion");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hrgn);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hrgn));
   }
   return;
 }
@@ -2600,25 +1781,16 @@ DEFUN( GDI:PlayMetaFile, hdc hmetafile)
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hmetafile = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = PlayMetaFile(hdc,hmetafile);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("PlayMetaFile");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2631,12 +1803,8 @@ DEFUN( GDI:PtInRegion, hrgn int0 int1)
   HRGN hrgn;
   int int0;
   int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hrgn = TheFpointer(arg)->fp_pointer;
@@ -2644,18 +1812,11 @@ DEFUN( GDI:PtInRegion, hrgn int0 int1)
   bool0 = PtInRegion(hrgn,int0,int1);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("PtInRegion");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2668,31 +1829,18 @@ DEFUN( GDI:PtVisible, hdc int0 int1)
   HDC hdc;
   int int0;
   int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = PtVisible(hdc,int0,int1);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("PtVisible");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2703,26 +1851,16 @@ DEFUN( GDI:RealizePalette, hdc)
   object arg;
   UINT uint;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   uint = RealizePalette(hdc);
   end_system_call();
   if(!uint){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("RealizePalette");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(uint);
-    mv_count=2;
+    VALUES1(uint32_to_I(uint));
   }
   return;
 }
@@ -2737,37 +1875,20 @@ DEFUN( GDI:Rectangle, hdc int0 int1 int2 int3)
   int int1;
   int int2;
   int int3;
-  arg = popSTACK();
-  check_sint(arg);
-  int3 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int2 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int3 = I_to_sint32(check_sint(popSTACK()));
+  int2 = I_to_sint32(check_sint(popSTACK()));
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = Rectangle(hdc,int0,int1,int2,int3);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("Rectangle");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2787,18 +1908,11 @@ DEFUN( GDI:ResizePalette, hpalette uint)
   bool0 = ResizePalette(hpalette,uint);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("ResizePalette");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2810,28 +1924,17 @@ DEFUN( GDI:RestoreDC, hdc int0)
   BOOL bool0;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = RestoreDC(hdc,int0);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("RestoreDC");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2842,26 +1945,16 @@ DEFUN( GDI:SaveDC, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = SaveDC(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SaveDC");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -2873,28 +1966,17 @@ DEFUN( GDI:SelectClipPath, hdc int0)
   BOOL bool0;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = SelectClipPath(hdc,int0);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SelectClipPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -2909,31 +1991,20 @@ DEFUN( GDI:SelectClipRgn, hdc hrgn)
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hrgn = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = SelectClipRgn(hdc,hrgn);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SelectClipRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
-// untested - was never called
-// uninspected - compiles but code was not checked
+// tested
 DEFUN( GDI:SelectObject, hdc hgdiobj)
 {
   object arg;
@@ -2943,26 +2014,16 @@ DEFUN( GDI:SelectObject, hdc hgdiobj)
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hgdiobj = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   hgdiobj0 = SelectObject(hdc,hgdiobj);
   end_system_call();
   if(NULL ==hgdiobj0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SelectObject");
   }
   else
   {
-    value1 = T;
-    value2 = allocate_fpointer((FOREIGN)hgdiobj0);
-    mv_count=2;
+    VALUES1(allocate_fpointer((FOREIGN)hgdiobj0));
   }
   return;
 }
@@ -2974,29 +2035,17 @@ DEFUN( GDI:SetArcDirection, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetArcDirection(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetArcDirection");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3009,9 +2058,7 @@ DEFUN( GDI:SetBkColor, hdc colorref)
   HDC hdc;
   COLORREF colorref;
   colorref = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   colorref0 = SetBkColor(hdc,colorref);
   end_system_call();
@@ -3024,29 +2071,17 @@ DEFUN( GDI:SetBkMode, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetBkMode(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetBkMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3061,25 +2096,16 @@ DEFUN( GDI:SetColorSpace, hdc hcolorspace)
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hcolorspace = TheFpointer(arg)->fp_pointer;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = SetColorSpace(hdc,hcolorspace);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetColorSpace");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3091,29 +2117,17 @@ DEFUN( GDI:SetGraphicsMode, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetGraphicsMode(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetGraphicsMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3125,29 +2139,17 @@ DEFUN( GDI:SetICMMode, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetICMMode(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetICMMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3159,29 +2161,17 @@ DEFUN( GDI:SetMapMode, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetMapMode(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetMapMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3194,26 +2184,16 @@ DEFUN( GDI:SetMapperFlags, hdc dword)
   HDC hdc;
   DWORD dword;
   dword = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   dword0 = SetMapperFlags(hdc,dword);
   end_system_call();
   if(!dword0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetMapperFlags");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(dword0);
-    mv_count=2;
+    VALUES1(uint32_to_I(dword0));
   }
   return;
 }
@@ -3224,26 +2204,16 @@ DEFUN( GDI:SetMetaRgn, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = SetMetaRgn(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetMetaRgn");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -3255,29 +2225,17 @@ DEFUN( GDI:SetPolyFillMode, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetPolyFillMode(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetPolyFillMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3289,29 +2247,17 @@ DEFUN( GDI:SetROP2, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetROP2(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetROP2");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3326,18 +2272,10 @@ DEFUN( GDI:SetRectRgn, hrgn int0 int1 int2 int3)
   int int1;
   int int2;
   int int3;
-  arg = popSTACK();
-  check_sint(arg);
-  int3 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int2 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int3 = I_to_sint32(check_sint(popSTACK()));
+  int2 = I_to_sint32(check_sint(popSTACK()));
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hrgn = TheFpointer(arg)->fp_pointer;
@@ -3345,18 +2283,11 @@ DEFUN( GDI:SetRectRgn, hrgn int0 int1 int2 int3)
   bool0 = SetRectRgn(hrgn,int0,int1,int2,int3);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetRectRgn");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3368,29 +2299,17 @@ DEFUN( GDI:SetStretchBltMode, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetStretchBltMode(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetStretchBltMode");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3403,26 +2322,16 @@ DEFUN( GDI:SetSystemPaletteUse, hdc uint)
   HDC hdc;
   UINT uint;
   uint = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   uint0 = SetSystemPaletteUse(hdc,uint);
   end_system_call();
   if(!uint0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetSystemPaletteUse");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(uint0);
-    mv_count=2;
+    VALUES1(uint32_to_I(uint0));
   }
   return;
 }
@@ -3435,26 +2344,16 @@ DEFUN( GDI:SetTextAlign, hdc uint)
   HDC hdc;
   UINT uint;
   uint = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   uint0 = SetTextAlign(hdc,uint);
   end_system_call();
   if(!uint0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetTextAlign");
   }
   else
   {
-    value1 = T;
-    value2 = uint32_to_I(uint0);
-    mv_count=2;
+    VALUES1(uint32_to_I(uint0));
   }
   return;
 }
@@ -3466,29 +2365,17 @@ DEFUN( GDI:SetTextCharacterExtra, hdc int0)
   int int1;
   HDC hdc;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   int1 = SetTextCharacterExtra(hdc,int0);
   end_system_call();
   if(0 <=int1){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetTextCharacterExtra");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int1);
-    mv_count=2;
+    VALUES1(sint32_to_I(int1));
   }
   return;
 }
@@ -3501,31 +2388,18 @@ DEFUN( GDI:SetTextJustification, hdc int0 int1)
   HDC hdc;
   int int0;
   int int1;
-  arg = popSTACK();
-  check_sint(arg);
-  int1 = I_to_sint32(arg);
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  int1 = I_to_sint32(check_sint(popSTACK()));
+  int0 = I_to_sint32(check_sint(popSTACK()));
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = SetTextJustification(hdc,int0,int1);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SetTextJustification");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3537,9 +2411,7 @@ DEFUN( GDI:ShowWindow, hwnd int0)
   BOOL bool0;
   HWND hwnd;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hwnd = TheFpointer(arg)->fp_pointer;
@@ -3547,18 +2419,11 @@ DEFUN( GDI:ShowWindow, hwnd int0)
   bool0 = ShowWindow(hwnd,int0);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("ShowWindow");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3570,9 +2435,7 @@ DEFUN( GDI:ShowWindowAsync, hwnd int0)
   BOOL bool0;
   HWND hwnd;
   int int0;
-  arg = popSTACK();
-  check_sint(arg);
-  int0 = I_to_sint32(arg);
+  int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hwnd = TheFpointer(arg)->fp_pointer;
@@ -3580,18 +2443,11 @@ DEFUN( GDI:ShowWindowAsync, hwnd int0)
   bool0 = ShowWindowAsync(hwnd,int0);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("ShowWindowAsync");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3602,26 +2458,16 @@ DEFUN( GDI:StartPage, hdc)
   object arg;
   int int0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   int0 = StartPage(hdc);
   end_system_call();
   if(0 <=int0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("StartPage");
   }
   else
   {
-    value1 = T;
-    value2 = sint32_to_I(int0);
-    mv_count=2;
+    VALUES1(sint32_to_I(int0));
   }
   return;
 }
@@ -3632,25 +2478,16 @@ DEFUN( GDI:StrokeAndFillPath, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = StrokeAndFillPath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("StrokeAndFillPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3661,25 +2498,16 @@ DEFUN( GDI:StrokePath, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = StrokePath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("StrokePath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3690,25 +2518,16 @@ DEFUN( GDI:SwapBuffers, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = SwapBuffers(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("SwapBuffers");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3726,18 +2545,11 @@ DEFUN( GDI:UnrealizeObject, hgdiobj)
   bool0 = UnrealizeObject(hgdiobj);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("UnrealizeObject");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3748,25 +2560,16 @@ DEFUN( GDI:UpdateColors, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = UpdateColors(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("UpdateColors");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3784,18 +2587,11 @@ DEFUN( GDI:UpdateWindow, hwnd)
   bool0 = UpdateWindow(hwnd);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("UpdateWindow");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }
@@ -3806,25 +2602,16 @@ DEFUN( GDI:WidenPath, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
   begin_system_call();
   bool0 = WidenPath(hdc);
   end_system_call();
   if(!bool0){
-    DWORD e;
-    begin_system_call();
-    e = GetLastError();
-    end_system_call();
-    value1 = NIL;
-    value2 = uint32_to_I(e);
-    mv_count=2;
+    do_GDI_ERROR("WidenPath");
   }
   else
   {
-    value1 = T;
-    mv_count=1;
+    VALUES1(T);
   }
   return;
 }

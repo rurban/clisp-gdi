@@ -51,9 +51,21 @@ HCURSOR      GetCursor(void);
 BOOL         GetCursorPos(LPPOINT);
 BOOL         SetCursorPos(int,int);
 BOOL         GetCursorInfo(PCURSORINFO);
-/*COLORREF     GetDCPenColor(HDC);*/
 COLORREF     SetDCPenColor(HDC,COLORREF);
-/*COLORREF     GetDCBrushColor(HDC);*/
 COLORREF     SetDCBrushColor(HDC,COLORREF);
 HDC          GetWindowDC(HWND);
 HDC          GetDCEx(HWND,HRGN,DWORD);
+HANDLE       AddFontMemResourceEx(PVOID,DWORD,PVOID,DWORD*);
+int          AddFontResourceExA(LPCSTR,DWORD,PVOID);
+int          AddFontResourceExW(LPCWSTR,DWORD,PVOID);
+BOOL         ColorCorrectPalette(HDC,HPALETTE,DWORD,DWORD);
+int          GetDeviceCaps(HDC,int);
+UINT         GetEnhMetaFileBits(HENHMETAFILE,UINT,LPBYTE);
+DWORD        GetFontUnicodeRanges(HDC,LPGLYPHSET);
+DWORD        GetGlyphIndicesA(HDC,LPCSTR,int,LPWORD,DWORD);
+DWORD        GetGlyphIndicesW(HDC,LPCWSTR,int,LPWORD,DWORD);
+int          GetRandomRgn(HDC,HRGN,INT);
+BOOL         RemoveFontMemResourceEx(HANDLE);
+BOOL         RemoveFontResourceExA(LPCSTR,DWORD,PVOID);
+BOOL         RemoveFontResourceExW(LPCWSTR,DWORD,PVOID);
+DWORD        SetLayout(HDC, DWORD);
