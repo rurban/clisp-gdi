@@ -39,6 +39,15 @@ nonreturning_function(static, invalid_argument, (object obj)) {
   pushSTACK(obj);
   error(error_condition,GETTEXT("~S is an invalid argument"));
 }
+nonreturning_function(static, invalid_string_argument, (object obj)) {
+  pushSTACK(obj);
+  error(error_condition,GETTEXT("~S is no string argument"));
+}
+nonreturning_function(static, invalid_type_argument, (object obj, char *type)) {
+  pushSTACK(asciz_to_string(type, encoding));
+  pushSTACK(obj);
+  error(error_condition,GETTEXT("~S is no argument of type ~S"));
+}
 nonreturning_function(static, invalid_named_argument, (object obj, char *name)) {
   pushSTACK(asciz_to_string(name, encoding));
   pushSTACK(obj);
@@ -52,26 +61,26 @@ nonreturning_function(static, invalid_named_argument, (object obj, char *name)) 
 
 /* allow processFPTYPE_fn(HPALETTE,hpalette,popSTACK()); */
 #define processFPTYPE_fn(type, ptr, arg) 	\
-    { object obj = arg;			        \
-      if(!fpointerp(obj))invalid_argument(obj); \
-      ptr = (type)TheFpointer(obj)->fp_pointer;}
+  { object obj = arg;                                           \
+    if(!fpointerp(obj))invalid_type_argument(obj,"fpointer");   \
+    ptr = (type)TheFpointer(obj)->fp_pointer;}
 
 /* only processFPTYPE(HPALETTE,hpalette,arg); */
 #define processFPTYPE(type, ptr, arg) 		\
-      if(!fpointerp(arg))invalid_argument(arg); \
-      ptr = (type)TheFpointer(arg)->fp_pointer
+  if(!fpointerp(arg))invalid_type_argument(arg,"fpointer");     \
+  ptr = (type)TheFpointer(arg)->fp_pointer
 
 static void processBOOL(void *p,object arg){
-    // arg: T or nil => 0 or 1
-    BOOL b;
-    b = (BOOL)I_to_uint32(arg);
-    p = &b;
+  // arg: T or nil => 0 or 1
+  BOOL b;
+  b = (BOOL)I_to_uint32(arg);
+  p = &b;
 }
 //static void processFINDEX_INFO_LEVELS(void *p,object arg){ assert(0); }
 //static void processFINDEX_SEARCH_OPS(void *p,object arg){ assert(0); }
 //static void processLPSTR(void *p,object arg){ assert(0); }
 static void processLPWSTR(LPCWSTR lpcwstr,object arg){ 
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
 }
 // create a S16string how? size includes the ending 0
@@ -88,22 +97,22 @@ static object outputLPSTR(LPCSTR lpcstr, uint size){
 }
 //static void processPBITMAPINFO(void *p,object arg){ assert(0); }
 static void processPINT(void *p,object arg){
-    int i;
-    i = I_to_uint32(check_uint(arg));
-    p = &i;
+  int i;
+  i = I_to_uint32(check_uint(arg));
+  p = &i;
 }
 //static void processSTR_P(void *p,object arg){ assert(0); }
 //static void processWSTR_P(void *p,object arg){ assert(0); }
 //static void processABC(ABC *p, object arg){ assert(0); }
 static void processPBYTE(BYTE *p, object arg){
-    BYTE i;
-    i = I_to_uint32(check_uint(arg));
-    p = &i;
+  BYTE i;
+  i = I_to_uint32(check_uint(arg));
+  p = &i;
 }
 static void processBYTE(BYTE *p, object arg){
-    BYTE i;
-    i = I_to_sint32(check_sint(arg));
-    p = &i;
+  BYTE i;
+  i = I_to_sint32(check_sint(arg));
+  p = &i;
 }
 //static void processABCFLOAT(ABCFLOAT *p, object arg){ assert(0); }
 //static void processENHMETAHEADER(void *p, object arg){ assert(0); }
@@ -214,10 +223,9 @@ static void processPLOGFONTA(LOGFONTA *p,object arg)
   p = (LOGFONTA *)TheFpointer(arg)->fp_pointer;
 }
 static void processLOGFONTW(LOGFONTW *p,object arg){ assert(0); }
-static object outputRECT(RECT *r)
+static object outputRECT(RECT *r, object p)
 {
   int i = 0;
-  object p;
   object num;
   pushSTACK(p); // Push the record to keep it safe from gc
   num = UL_to_I(r->left); // Can cause gc
@@ -304,9 +312,8 @@ static void processXFORM(XFORM *p, object arg)
     p->eDy = (float)(jfloat.eksplicit);
   }
 }
-static object outputXFORM(XFORM *p){ 
+static object outputXFORM(XFORM *p, object arg){ 
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->eM11);
   TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->eM12);
@@ -316,9 +323,8 @@ static object outputXFORM(XFORM *p){
   TheRecord(popSTACK())->recdata[i++] = allocate_ffloat(p->eDy);
   return arg;
 }
-static object outputABCFLOAT(ABCFLOAT *p){ 
+static object outputABCFLOAT(ABCFLOAT *p, object arg){ 
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->abcfA);
   TheRecord(STACK_0)->recdata[i++] = allocate_ffloat(p->abcfB);
@@ -332,10 +338,9 @@ static void processLPSIZE(SIZE *p, object arg)
    p->cy = I_to_L(TheRecord(arg)->recdata[i++]);
 }
 // Return a SIZE structure
-static object outputLPSIZE(SIZE *lpsize)
+static object outputLPSIZE(SIZE *lpsize, object arg)
 {
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(lpsize->cx);
   TheRecord(popSTACK())->recdata[i++] = fixnum(lpsize->cy);
@@ -349,10 +354,9 @@ static void processPOINT(POINT* p, object arg)
    p->x = I_to_sint32(TheRecord(arg)->recdata[i++]);
    p->y = I_to_sint32(TheRecord(arg)->recdata[i++]);
 }
-static object outputPOINT(POINT *p)
+static object outputPOINT(POINT *p, object arg)
 {
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->x);
   TheRecord(popSTACK())->recdata[i++] = fixnum(p->y);
@@ -389,8 +393,15 @@ static void processCOLORADJUSTMENT(COLORADJUSTMENT *p, object arg)
    for(i = 0; i < 8; i++)w[i]= I_to_uint16(TheRecord(arg)->recdata[i]);
    for(; i < 12; i++)s[i] = I_to_sint16(TheRecord(arg)->recdata[i]);
 }
-static object outputCOLORADJUSTMENT(COLORADJUSTMENT *p){
-    return allocate_fpointer((FOREIGN)p);
+static object outputCOLORADJUSTMENT(COLORADJUSTMENT *p, object arg){
+  int i = 0;
+  WORD *w = (WORD*)p;
+  SHORT *s = (SHORT*)p;
+  pushSTACK(arg);
+  for(i = 0; i < 8; i++) TheRecord(STACK_0)->recdata[i++] = UL_to_I(w[i]);
+  for(; i < 12; i++) TheRecord(STACK_0)->recdata[i++] = L_to_I(s[i]);
+  popSTACK();
+  return arg;
 }
 // untested - was never called
 static void processPIXELFORMATDESCRIPTOR(PIXELFORMATDESCRIPTOR* p,object arg)
@@ -433,7 +444,11 @@ static FIXED toFixed(float f)
   fixed.fract = (WORD)(10000*(f - fixed.value));
   return fixed;
 }
-
+static ffloatjanus* fromFixed(FIXED fixed, ffloatjanus *f)
+{
+  f->eksplicit = (ffloat)(fixed.value + (double)(fixed.fract/10000.0));
+  return f;
+}
 static void processMAT2(MAT2 *p, object arg)
 {
   int i = 0;
@@ -446,6 +461,17 @@ static void processMAT2(MAT2 *p, object arg)
   p->eM21 = toFixed((float)(f.eksplicit));
   FF_to_c_float(TheRecord(arg)->recdata[i++],&f);
   p->eM22 = toFixed((float)(f.eksplicit));
+}
+static object outputMAT2(MAT2 *p, object arg)
+{
+  int i = 1;
+  ffloatjanus f;
+  pushSTACK(arg);
+  TheRecord(STACK_0)->recdata[i++] = c_float_to_FF(fromFixed(p->eM11,&f));
+  TheRecord(STACK_0)->recdata[i++] = c_float_to_FF(fromFixed(p->eM12,&f));
+  TheRecord(STACK_0)->recdata[i++] = c_float_to_FF(fromFixed(p->eM21,&f));
+  TheRecord(popSTACK())->recdata[i++] = c_float_to_FF(fromFixed(p->eM22,&f));
+  return arg;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
@@ -541,10 +567,9 @@ static void processCREATESTRUCTA(CREATESTRUCT *p, object arg)
   p->lpCreateParams = 0;  //= I_to_uint8(TheRecord(arg)->recdata[i++]);
 }
 // unused
-static object outputCREATESTRUCTA(CREATESTRUCT *p)
+static object outputCREATESTRUCTA(CREATESTRUCT *p, object arg)
 {
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = UL_to_I(p->dwExStyle);
   TheRecord(STACK_0)->recdata[i++] = p->lpszClass?
@@ -564,10 +589,9 @@ static object outputCREATESTRUCTA(CREATESTRUCT *p)
   TheRecord(popSTACK())->recdata[i++] = NIL; //L_to_I(p->lpCreateParams);
   return arg;
 }
-static object outputTEXTMETRICA(TEXTMETRICA *p)
+static object outputTEXTMETRICA(TEXTMETRICA *p, object arg)
 {
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmHeight);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmAscent);
@@ -591,10 +615,9 @@ static object outputTEXTMETRICA(TEXTMETRICA *p)
   TheRecord(popSTACK())->recdata[i++] = fixnum(p->tmCharSet);
   return arg;
 }
-static object outputTEXTMETRICW(TEXTMETRICW *p)
+static object outputTEXTMETRICW(TEXTMETRICW *p, object arg)
 {
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmHeight);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->tmAscent);
@@ -631,10 +654,9 @@ static void processCURSORINFO(CURSORINFO *c, object arg){
   c->ptScreenPos.x = I_to_L(TheRecord(arg)->recdata[i++]);
   c->ptScreenPos.y = I_to_L(TheRecord(arg)->recdata[i++]);
 }
-static object outputCURSORINFO(CURSORINFO *c)
+static object outputCURSORINFO(CURSORINFO *c, object arg)
 {
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = UL_to_I(c->cbSize);
   TheRecord(STACK_0)->recdata[i++] = UL_to_I(c->flags);
@@ -643,9 +665,8 @@ static object outputCURSORINFO(CURSORINFO *c)
   TheRecord(popSTACK())->recdata[i++] = fixnum(c->ptScreenPos.y);
   return arg;
 }
-static object outputGCP_RESULTSA(GCP_RESULTSA* p){
+static object outputGCP_RESULTSA(GCP_RESULTSA* p, object arg){
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->lStructSize);
   TheRecord(STACK_0)->recdata[i++] = p->lpOutString?
@@ -665,9 +686,8 @@ static object outputGCP_RESULTSA(GCP_RESULTSA* p){
   TheRecord(popSTACK())->recdata[i++] = UL_to_I(p->nMaxFit);
   return arg;
 }
-static object outputGCP_RESULTSW(GCP_RESULTSW* p){ 
+static object outputGCP_RESULTSW(GCP_RESULTSW* p, object arg){ 
   int i = 1;
-  object arg;
   pushSTACK(arg);
   TheRecord(STACK_0)->recdata[i++] = fixnum(p->lStructSize);
   /* TODO: convert to S16string */

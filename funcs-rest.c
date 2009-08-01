@@ -239,7 +239,7 @@ DEFUN( GDI:CreateFontA,&rest r)
   DWORD dword5;
   DWORD dword6;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
      dword6 = I_to_uint32(check_uint(popSTACK()));
      dword5 = I_to_uint32(check_uint(popSTACK()));
@@ -298,7 +298,7 @@ DEFUN( GDI:CreateFontW,&rest r)
   DWORD dword6;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   dword6 = I_to_uint32(check_uint(popSTACK()));
   dword5 = I_to_uint32(check_uint(popSTACK()));
@@ -465,10 +465,10 @@ DEFUN( GDI:CreateWindowExA,&rest r)
   int0 = I_to_sint32(check_sint(popSTACK()));
   dword0 = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding,lpcstr0, {
     arg = popSTACK();
-    if(!stringp(arg))invalid_argument(arg);
+    if(!stringp(arg))invalid_string_argument(arg);
     with_string_0(arg,encoding, lpcstr,{
       dword = I_to_uint32(check_uint(popSTACK()));
       begin_system_call();
@@ -521,10 +521,10 @@ DEFUN( GDI:CreateWindowExW,&rest r)
   int0 = I_to_sint32(check_sint(popSTACK()));
   dword0 = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr0 = 0; //(WIDECHAR(arg,encoding));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = 0; //(WIDECHAR(arg,encoding));
   dword = I_to_uint32(check_uint(popSTACK()));
 
@@ -553,13 +553,13 @@ DEFUN( GDI:ExtEscape,&rest r)
   int int2;
   LPSTR lpstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpstr, {
     arg = popSTACK();
     check_sint(arg);
     int2 = I_to_sint32(arg);
     arg = popSTACK();
-    if(!stringp(arg))invalid_argument(arg);
+    if(!stringp(arg))invalid_string_argument(arg);
     with_string_0(arg,encoding, lpcstr, {
       arg = popSTACK();
       check_sint(arg);
@@ -603,7 +603,7 @@ DEFUN( GDI:ExtTextOutA,&rest r)
   processPINT(pint,arg0);
   uint0 = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg0 = popSTACK();
     processRECT(lpcrect,arg0);
@@ -650,7 +650,7 @@ DEFUN( GDI:ExtTextOutW,&rest r)
   processPINT(pint,arg0);
   uint0 = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   arg0 = popSTACK();
   processRECT(lpcrect,arg0);
@@ -696,7 +696,7 @@ DEFUN( GDI:FindFirstFileExA,&rest r)
   arg0 = popSTACK();
   processFPTYPE(FINDEX_INFO_LEVELS,findex_info_levels,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     handle = FindFirstFileExA(lpcstr,findex_info_levels,pvoid,findex_search_ops,pvoid0,dword);
@@ -736,7 +736,7 @@ DEFUN( GDI:FindFirstFileExW,&rest r)
   arg0 = popSTACK();
   processFPTYPE(FINDEX_INFO_LEVELS,findex_info_levels,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   handle = FindFirstFileExW(lpcwstr,findex_info_levels,pvoid,findex_search_ops,pvoid0,dword);
@@ -751,17 +751,19 @@ DEFUN( GDI:FindFirstFileExW,&rest r)
   return;
 }
 // untested - was never called
-DEFUN( GDI:GetCharacterPlacementA, hdc string nCount nMaxExtent dwFlags)
+DEFUN( GDI:GetCharacterPlacementA, hdc string nCount nMaxExtent lpgcp_resultsa dwFlags)
 /*
     string
     nCount     - number of characters in string
     nMaxExtent - maximum extent for displayed string
+    lpgcp_resultsa GCP_RESULTS* pointer to buffer for placement result
     dwFlags    - GCP_ placement flags
 
-    returns SIZE (width + height) + GCP_RESULTS* pointer to buffer for placement result
+    returns SIZE (width + height) as DWORD 
+            + lpgcp_resultsa
 */
 {
-  object arg;
+  object arg, arg0;
   DWORD dword;
   HDC hdc;
   LPCSTR lpcstr;
@@ -769,10 +771,12 @@ DEFUN( GDI:GetCharacterPlacementA, hdc string nCount nMaxExtent dwFlags)
   GCP_RESULTSA* lpgcp_resultsa = alloca(sizeof(GCP_RESULTSA));
   DWORD dwFlags;
   dwFlags = I_to_uint32(check_uint(popSTACK()));
+  arg0 = popSTACK();
+  //processGCP_RESULTSA(lpgcp_resultsa,arg0);
   nMaxExtent = I_to_sint32(check_sint(popSTACK()));
   nCount = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     getHDC(hdc,arg);
 
@@ -784,18 +788,18 @@ DEFUN( GDI:GetCharacterPlacementA, hdc string nCount nMaxExtent dwFlags)
     }
     else
     {
-        value1 = outputLPSIZE((SIZE *)&dword);
-        value2 = outputGCP_RESULTSA(lpgcp_resultsa);
-        mv_count=2;
+      value1 = UL_to_I(dword);
+      value2 = outputGCP_RESULTSA(lpgcp_resultsa,arg0);
+      mv_count=2;
     }
   });
   return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
-DEFUN( GDI:GetCharacterPlacementW, hdc string nCount nMaxExtent dwFlags)
+DEFUN( GDI:GetCharacterPlacementW, hdc string nCount nMaxExtent lpgcp_resultsw dwFlags)
 {
-  object arg;
+  object arg, arg0;
   DWORD dword;
   HDC hdc;
   LPCWSTR lpcwstr;
@@ -803,10 +807,13 @@ DEFUN( GDI:GetCharacterPlacementW, hdc string nCount nMaxExtent dwFlags)
   GCP_RESULTSW* lpgcp_resultsw = alloca(sizeof(GCP_RESULTSW));
   DWORD dwFlags;
   dwFlags = I_to_uint32(check_uint(popSTACK()));
+  arg0 = popSTACK();
+  if(!fpointerp(arg))invalid_argument(arg);
+  //processGCP_RESULTSW(lpgcp_resultsw,arg0);
   nMaxExtent = I_to_sint32(check_sint(popSTACK()));
   nCount = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg);
 
@@ -818,8 +825,9 @@ DEFUN( GDI:GetCharacterPlacementW, hdc string nCount nMaxExtent dwFlags)
   }
   else
   {
-    value1 = outputLPSIZE((SIZE *)&dword);
-    value2 = outputGCP_RESULTSW(lpgcp_resultsw);
+    value1 = UL_to_I(dword);
+    //value1 = outputLPSIZE((SIZE *)&dword);
+    value2 = outputGCP_RESULTSW(lpgcp_resultsw, arg0);
     mv_count=2;
   }
   return;
@@ -885,7 +893,7 @@ DEFUN( GDI:GetTextExtentExPointA,&rest r)
   int1 = I_to_sint32(check_sint(popSTACK()));
   int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     if(!fpointerp(arg))invalid_argument(arg);
@@ -927,7 +935,7 @@ DEFUN( GDI:GetTextExtentExPointW,&rest r)
   int1 = I_to_sint32(check_sint(popSTACK()));
   int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg);
 
@@ -1393,7 +1401,7 @@ DEFUN( GDI:TabbedTextOutA,&rest r)
   int3 = I_to_sint32(check_sint(popSTACK()));
   int2 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     check_sint(arg);
@@ -1472,7 +1480,7 @@ DEFUN( GDI:SearchPathA, lpPath lpFileName lpExtension nBufferLength lpBuffer)
   processFPTYPE(LPSTR,lpBuffer,arg);
   nBufferLength = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpExtension, {
     arg0 = popSTACK();
     if(!stringp(arg0))invalid_argument(arg0);
@@ -1481,7 +1489,7 @@ DEFUN( GDI:SearchPathA, lpPath lpFileName lpExtension nBufferLength lpBuffer)
       if (nullp(arg)) {
         lpPath = NULL;
       } else {
-        if(!stringp(arg))invalid_argument(arg);
+        if(!stringp(arg))invalid_string_argument(arg);
         lpPath = string_to_asciz(arg,encoding);
       }
       begin_system_call();
@@ -1518,16 +1526,16 @@ DEFUN( GDI:SearchPathW, lpPath lpFileName lpExtension nBufferLength lpBuffer)
   processFPTYPE(LPWSTR,lpBuffer,arg0);
   nBufferLength = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpExtension = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpFileName = WIDECHAR(arg,encoding);
   arg = popSTACK();
   if (nullp(arg))
     lpPath = NULL;
   else {
-    if(!stringp(arg))invalid_argument(arg);
+    if(!stringp(arg))invalid_string_argument(arg);
     lpPath = WIDECHAR(arg,encoding);
   }
 

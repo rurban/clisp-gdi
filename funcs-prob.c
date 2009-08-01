@@ -10,7 +10,7 @@ DEFUN( GDI:AddFontResourceA, lpcstr)
   int int0;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     int0 = AddFontResourceA(lpcstr);
@@ -33,7 +33,7 @@ DEFUN( GDI:AddFontResourceW, lpcwstr)
   int int0;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   int0 = AddFontResourceW(lpcwstr);
@@ -56,7 +56,7 @@ DEFUN( GDI:CopyEnhMetaFileA, henhmetafile lpcstr)
   HENHMETAFILE henhmetafile;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     if(!fpointerp(arg))invalid_argument(arg);
@@ -83,7 +83,7 @@ DEFUN( GDI:CopyEnhMetaFileW, henhmetafile lpcwstr)
   HENHMETAFILE henhmetafile;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = 0; //WIDECHAR(arg,encoding);
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
@@ -109,7 +109,7 @@ DEFUN( GDI:CopyMetaFileA, hmetafile lpcstr)
   HMETAFILE hmetafile;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     if(!fpointerp(arg))invalid_argument(arg);
@@ -136,7 +136,7 @@ DEFUN( GDI:CopyMetaFileW, hmetafile lpcwstr)
   HMETAFILE hmetafile;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
@@ -255,13 +255,13 @@ DEFUN( GDI:CreateDCA, lpcstr lpcstr0 lpcstr1 devmodea_p)
   arg0 = popSTACK();
   processFPTYPE(DEVMODEA*,devmodea_p,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr1, {
     arg = popSTACK();
-    if(!stringp(arg))invalid_argument(arg);
+    if(!stringp(arg))invalid_string_argument(arg);
     with_string_0(arg,encoding, lpcstr0, {
       arg = popSTACK();
-      if(!stringp(arg))invalid_argument(arg);
+      if(!stringp(arg))invalid_string_argument(arg);
       with_string_0(arg,encoding, lpcstr, {
         processFPTYPE(DEVMODEA*,devmodea_p,arg0);
         begin_system_call();
@@ -293,13 +293,13 @@ DEFUN( GDI:CreateDCW, lpcwstr lpcwstr0 lpcwstr1 devmodew_p)
   arg0 = popSTACK();
   processFPTYPE(DEVMODEW*,devmodew_p,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr1 = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr0 = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
 
   begin_system_call();
@@ -348,12 +348,12 @@ DEFUN( GDI:CreateEnhMetaFileA, hdc lpcstr lpcrect lpcstr0)
   object arg0;
   LPCSTR lpcstr0;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr0, {
     arg0 = popSTACK();
     processRECT(lpcrect,arg0);
     arg = popSTACK();
-    if(!stringp(arg))invalid_argument(arg);
+    if(!stringp(arg))invalid_string_argument(arg);
     with_string_0(arg,encoding, lpcstr, {
       arg = popSTACK();
       if(!fpointerp(arg))invalid_argument(arg);
@@ -385,12 +385,12 @@ DEFUN( GDI:CreateEnhMetaFileW, hdc lpcwstr lpcrect lpcwstr0)
   object arg0;
   LPCWSTR lpcwstr0;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr0 = WIDECHAR(arg,encoding);
   arg0 = popSTACK();
   processRECT(lpcrect,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg);
 
@@ -464,13 +464,13 @@ DEFUN( GDI:CreateICA, lpcstr lpcstr0 lpcstr1 devmodea_p)
   arg0 = popSTACK();
   processFPTYPE(DEVMODEA*,devmodea_p,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr1, {
     arg = popSTACK();
-    if(!stringp(arg))invalid_argument(arg);
+    if(!stringp(arg))invalid_string_argument(arg);
     with_string_0(arg,encoding, lpcstr0, {
       arg = popSTACK();
-      if(!stringp(arg))invalid_argument(arg);
+      if(!stringp(arg))invalid_string_argument(arg);
       with_string_0(arg,encoding, lpcstr, {
         processFPTYPE(DEVMODEA*,devmodea_p,arg0);
         begin_system_call();
@@ -502,13 +502,13 @@ DEFUN( GDI:CreateICW, lpcwstr lpcwstr0 lpcwstr1 devmodew_p)
   arg0 = popSTACK();
   processFPTYPE(DEVMODEW*,devmodew_p,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr1 = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr0 = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
 
   begin_system_call();
@@ -588,7 +588,7 @@ DEFUN( GDI:CreateMetaFileA, lpcstr)
   HDC hdc;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     hdc = CreateMetaFileA(lpcstr);
@@ -611,7 +611,7 @@ DEFUN( GDI:CreateMetaFileW, lpcwstr)
   HDC hdc;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   hdc = CreateMetaFileW(lpcwstr);
@@ -852,7 +852,7 @@ DEFUN( GDI:LoadCursorW, hinstance lpcwstr)
   HINSTANCE hinstance;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
@@ -1005,7 +1005,7 @@ DEFUN( GDI:RemoveFontResourceA, lpcstr)
   BOOL bool0;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcstr = TheAsciz(string_to_asciz(arg,encoding));
   begin_system_call();
   bool0 = RemoveFontResourceA(lpcstr);
@@ -1027,7 +1027,7 @@ DEFUN( GDI:RemoveFontResourceW, lpcwstr)
   BOOL bool0;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   bool0 = RemoveFontResourceW(lpcwstr);
@@ -1175,7 +1175,7 @@ DEFUN( GDI:SetICMProfileA, hdc lpstr)
   HDC hdc;
   LPSTR lpstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpstr = TheAsciz(string_to_asciz(arg,encoding));
   getHDC(hdc,arg);
   begin_system_call();
@@ -1199,7 +1199,7 @@ DEFUN( GDI:SetICMProfileW, hdc lpwstr)
   HDC hdc;
   LPWSTR lpwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg);
   begin_system_call();
@@ -1444,7 +1444,7 @@ DEFUN( GDI:GetCursorInfo, cursorinfo)
   CURSORINFO cursorinfo;
   object arg0; 
   arg0 = popSTACK();
-  processCURSORINFO(&cursorinfo,arg0); 
+  processCURSORINFO(&cursorinfo,arg0);
   begin_system_call();
   bool0 = GetCursorInfo(&cursorinfo);
   end_system_call();
@@ -1453,7 +1453,7 @@ DEFUN( GDI:GetCursorInfo, cursorinfo)
   }
   else
   {
-    VALUES1(outputCURSORINFO(&cursorinfo));
+    VALUES1(outputCURSORINFO(&cursorinfo,arg0));
   }
   return;
 }
@@ -1462,12 +1462,12 @@ DEFUN( GDI:GetCursorInfo, cursorinfo)
 // written by hand
 DEFUN( GDI:SetDCPenColor, hdc colorref)
 {
-  object arg;
+  object arg,arg0;
   COLORREF colorref0;
   HDC hdc;
   COLORREF colorref;
-  arg = popSTACK();
-  colorref = processCOLORREF(arg);
+  arg0 = popSTACK();
+  colorref = processCOLORREF(arg0);
   getHDC(hdc,arg);
   begin_system_call();
   colorref0 = SetDCPenColor(hdc,colorref);
@@ -1634,7 +1634,7 @@ DEFUN( GDI:AddFontResourceExA, lpcFilename fl pdv)
   pdv = (void*)0;
   fl = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcFilename = TheAsciz(string_to_asciz(arg,encoding));
   begin_call();
   int0 = AddFontResourceExA(lpcFilename,fl,pdv);
@@ -1662,7 +1662,7 @@ DEFUN( GDI:AddFontResourceExW, lpcwFilename fl pdv)
   pdv = (void*)0;
   fl = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwFilename = WIDECHAR(arg,encoding);
   begin_call();
   int0 = AddFontResourceExW(lpcwFilename,fl,pdv);
@@ -1710,12 +1710,15 @@ DEFUN( GDI:ColorCorrectPalette, hdc hpalette dword dword0)
 // uninspected - compiles but code was not checked
 DEFUN( GDI:GetEnhMetaFileBits, henhmetafile uint lpbyte)
 {
-  object arg;
+  object arg,arg0;
   UINT uint0;
   HENHMETAFILE henhmetafile;
   UINT uint;
   BYTE* lpbyte;// = alloca(sizeof(BYTE));
-  processBYTE(lpbyte,popSTACK());
+  arg0=popSTACK();
+  if(!simple_bit_vector_p(Atype_8Bit,arg0))invalid_type_argument(arg0,"8bit bit_vector");
+  lpbyte = (BYTE*)&(TheSbvector(arg0)->data);
+  //processLPBYTE(lpbyte,arg0);
   uint = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
   processFPTYPE(HENHMETAFILE,henhmetafile,arg);
@@ -1728,7 +1731,8 @@ DEFUN( GDI:GetEnhMetaFileBits, henhmetafile uint lpbyte)
   else
   {
     value1 = uint32_to_I(uint0);
-    mv_count=1;
+    value2 = arg0; //outputLPBYTE(lpbyte,arg0);
+    mv_count=2;
   }
   return;
 }
@@ -1773,7 +1777,7 @@ DEFUN( GDI:GetGlyphIndicesA, hdc lpcstr c pgi fl)
   pgi = (WORD*)&(TheSbvector(arg)->data);
   c = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcstr = TheAsciz(string_to_asciz(arg,encoding));
   arg = popSTACK();
   processFPTYPE(HDC,hdc,arg);
@@ -1807,7 +1811,7 @@ DEFUN( GDI:GetGlyphIndicesW, hdc lpcwstr c pgi fl)
   pgi = (WORD*)&(TheSbvector(arg)->data);
   c = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   arg = popSTACK();
   processFPTYPE(HDC,hdc,arg);
@@ -1828,21 +1832,23 @@ DEFUN( GDI:GetGlyphIndicesW, hdc lpcwstr c pgi fl)
 // uninspected - compiles but code was not checked
 DEFUN( GDI:GetGlyphOutlineA,&rest r)
 {
-  object arg;
+  object arg,arg0,arg1;
   DWORD dword0;
   HDC hdc;
   UINT uint;
   UINT uint0;
-  GLYPHMETRICS* lpglyphmetrics;// = alloca(sizeof(GLYPHMETRICS));
+  GLYPHMETRICS* lpglyphmetrics = alloca(sizeof(GLYPHMETRICS));
   DWORD dword;
   void* pvoid;
-  MAT2* lpmat2;// = alloca(sizeof(MAT2));
-  processMAT2(lpmat2,popSTACK());
+  MAT2* lpmat2 = alloca(sizeof(MAT2));
+  arg0 = popSTACK();
+  processMAT2(lpmat2,arg0);
   arg = popSTACK();
   if(!simple_bit_vector_p(Atype_8Bit,arg))invalid_argument(arg);
   pvoid = (void*)&(TheSbvector(arg)->data);
   dword = I_to_uint32(check_uint(popSTACK()));
-  processFPTYPE(GLYPHMETRICS*,lpglyphmetrics,popSTACK());
+  arg1 = popSTACK();
+  processFPTYPE(GLYPHMETRICS*,lpglyphmetrics,arg1);
   uint0 = I_to_uint32(check_uint(popSTACK()));
   uint = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
@@ -1856,7 +1862,10 @@ DEFUN( GDI:GetGlyphOutlineA,&rest r)
   else
   {
     value1 = uint32_to_I(dword0);
-    mv_count=1;
+    value2 = outputMAT2(lpmat2,arg0);
+    value3 = allocate_fpointer(pvoid);
+    value4 = allocate_fpointer(lpglyphmetrics);
+    mv_count=4;
   }
   return;
 }
@@ -1959,7 +1968,7 @@ DEFUN( GDI:RemoveFontResourceExA, lpcstr dword pvoid)
   pvoid = (void*)&(TheSbvector(arg)->data);
   dword = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcstr = TheAsciz(string_to_asciz(arg,encoding));
   begin_call();
   bool0 = RemoveFontResourceExA(lpcstr,dword,pvoid);
@@ -1988,7 +1997,7 @@ DEFUN( GDI:RemoveFontResourceExW, lpcwstr dword pvoid)
   pvoid = (void*)&(TheSbvector(arg)->data);
   dword = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_call();
   bool0 = RemoveFontResourceExW(lpcwstr,dword,pvoid);
@@ -2092,18 +2101,18 @@ DEFUN( GDI:DeviceCapabilitiesExA, lpcstr lpcstr0 word lpstr devmodea_p)
   LPCSTR lpcstr0;
   WORD word;
   LPSTR lpstr;
-  DEVMODEA* devmodea_p;// = alloca(sizeof(DEVMODEA));
+  DEVMODEA* devmodea_p = alloca(sizeof(DEVMODEA));
   arg0 = popSTACK();
   processFPTYPE(DEVMODEA*,devmodea_p,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpstr = TheAsciz(string_to_asciz(arg,encoding));
   word = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcstr0 = TheAsciz(string_to_asciz(arg,encoding));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcstr = TheAsciz(string_to_asciz(arg,encoding));
   begin_call();
   int0 = DeviceCapabilitiesExA(lpcstr,lpcstr0,word,lpstr,devmodea_p);
@@ -2132,14 +2141,14 @@ DEFUN( GDI:DeviceCapabilitiesExW, lpcwstr lpcwstr0 word lpwstr devmodew_p)
   arg0 = popSTACK();
   processFPTYPE(DEVMODEW*,devmodew_p,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpwstr = WIDECHAR(arg,encoding);
   word = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr0 = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_call();
   int0 = DeviceCapabilitiesExW(lpcwstr,lpcwstr0,word,lpwstr,devmodew_p);
@@ -2266,7 +2275,7 @@ DEFUN( GDI:GetFontResourceInfo, lpszFilename cbBuffer lpvoid dwQueryType)
   processFPTYPE(void*,lpvoid,arg1);
   cbBuffer = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpszFilename, {
     begin_call();
     bool0 = GetFontResourceInfo(lpszFilename,&cbBuffer,lpvoid,dwQueryType);
@@ -2296,7 +2305,7 @@ DEFUN( GDI:GetFontResourceInfoW, lpcwstr cbBuffer lpvoid dwQueryType)
   processFPTYPE(void*,lpvoid,arg1);
   cbBuffer = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_call();
   bool0 = GetFontResourceInfoW(lpcwstr,&cbBuffer,lpvoid,dwQueryType);
