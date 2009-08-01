@@ -187,13 +187,13 @@ DEFUN( GDI:CreateScalableFontResourceA, dword lpcstr lpcstr0 lpcstr1)
   LPCSTR lpcstr0;
   LPCSTR lpcstr1;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr1, {
     arg = popSTACK();
-    if(!stringp(arg))invalid_argument(arg);
+    if(!stringp(arg))invalid_string_argument(arg);
     with_string_0(arg,encoding, lpcstr0, {
       arg = popSTACK();
-      if(!stringp(arg))invalid_argument(arg);
+      if(!stringp(arg))invalid_string_argument(arg);
       with_string_0(arg,encoding, lpcstr, {
         dword = I_to_uint32(check_uint(popSTACK()));
         begin_system_call();
@@ -222,13 +222,13 @@ DEFUN( GDI:CreateScalableFontResourceW, dword lpcwstr lpcwstr0 lpcwstr1)
   LPCWSTR lpcwstr0;
   LPCWSTR lpcwstr1;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr1 = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr0 = WIDECHAR(arg,encoding);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   dword = I_to_uint32(check_uint(popSTACK()));
   begin_system_call();
@@ -310,7 +310,7 @@ DEFUN( GDI:DrawEscape, hdc int0 int1 lpcstr)
   int int1;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     check_sint(arg);
@@ -1457,7 +1457,7 @@ DEFUN( GDI:TextOutA, hdc int0 int1 lpcstr int2)
   int int2;
   int2 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     check_sint(arg);
@@ -1494,7 +1494,7 @@ DEFUN( GDI:TextOutW, hdc int0 int1 lpcwstr int2)
   int int2;
   int2 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   int1 = I_to_sint32(check_sint(popSTACK()));
   int0 = I_to_sint32(check_sint(popSTACK()));
@@ -1523,7 +1523,7 @@ DEFUN( GDI:UpdateICMRegKeyA, dword dword0 lpstr uint)
   UINT uint;
   uint = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpstr, {
     dword0 = I_to_uint32(check_uint(popSTACK()));
     dword = I_to_uint32(check_uint(popSTACK()));
@@ -1552,7 +1552,7 @@ DEFUN( GDI:UpdateICMRegKeyW, dword dword0 lpwstr uint)
   UINT uint;
   uint = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpwstr = WIDECHAR(arg,encoding);
   dword0 = I_to_uint32(check_uint(popSTACK()));
   dword = I_to_uint32(check_uint(popSTACK()));

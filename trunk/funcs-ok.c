@@ -50,7 +50,7 @@ DEFUN( GDI:AddAtomA, lpcstr)
   ATOM atom;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     atom = AddAtomA(lpcstr);
@@ -74,7 +74,7 @@ DEFUN( GDI:AddAtomW, lpcwstr)
   ATOM atom;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   atom = AddAtomW(lpcwstr);
@@ -857,7 +857,7 @@ DEFUN( GDI:FindAtomA, lpcstr)
   ATOM atom;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     atom = FindAtomA(lpcstr);
@@ -880,7 +880,7 @@ DEFUN( GDI:FindAtomW, lpcwstr)
   ATOM atom;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   atom = FindAtomW(lpcwstr);
@@ -1469,7 +1469,7 @@ DEFUN( GDI:GlobalAddAtomA, lpcstr)
   ATOM atom;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     atom = GlobalAddAtomA(lpcstr);
@@ -1493,7 +1493,7 @@ DEFUN( GDI:GlobalAddAtomW, lpcwstr)
   ATOM atom;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   atom = GlobalAddAtomW(lpcwstr);
@@ -1516,7 +1516,7 @@ DEFUN( GDI:GlobalFindAtomA, lpcstr)
   ATOM atom;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     atom = GlobalFindAtomA(lpcstr);
@@ -1540,7 +1540,7 @@ DEFUN( GDI:GlobalFindAtomW, lpcwstr)
   ATOM atom;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   atom = GlobalFindAtomW(lpcwstr);
@@ -1639,7 +1639,7 @@ DEFUN( GDI:LoadCursorFromFileA, lpcstr)
   HCURSOR hcursor;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     hcursor = LoadCursorFromFileA(lpcstr);
@@ -1662,7 +1662,7 @@ DEFUN( GDI:LoadCursorFromFileW, lpcwstr)
   HCURSOR hcursor;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   hcursor = LoadCursorFromFileW(lpcwstr);

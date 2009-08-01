@@ -37,9 +37,9 @@ DEFUN( GDI:CheckColorsInGamut, hdc lpaRGBQuad lpResult nCount)
 }
 // untested - was never called
 // removed 1st lpxformResult arg
-DEFUN( GDI:CombineTransform, xform1 xform2)
+DEFUN( GDI:CombineTransform, lpxform xform1 xform2)
 {
-  object arg1,arg2;
+  object arg0,arg1,arg2;
   BOOL bool0;
   XFORM xform1;
   XFORM xform2;
@@ -48,6 +48,8 @@ DEFUN( GDI:CombineTransform, xform1 xform2)
   processXFORM(&xform2,arg2);
   arg1 = popSTACK();
   processXFORM(&xform1,arg1);
+  arg0 = popSTACK();
+  processXFORM(lpxform,arg0);
 
   begin_system_call();
   bool0 = CombineTransform(lpxform,&xform1,&xform2);
@@ -57,7 +59,7 @@ DEFUN( GDI:CombineTransform, xform1 xform2)
   }
   else
   {
-    value1 = outputXFORM(lpxform); // TODO
+    value1 = outputXFORM(lpxform,arg0);
     mv_count=1;
   }
   return;
@@ -149,7 +151,7 @@ DEFUN( GDI:EnumFontFamiliesA, hdc lpcstr fontenumproca lparam)
   arg0 = popSTACK();
   //processFONTENUMPROCA(&fontenumproca,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     if(!fpointerp(arg))invalid_argument(arg);
@@ -249,7 +251,7 @@ DEFUN( GDI:EnumFontFamiliesW, hdc lpcwstr fontenumprocw lparam)
   arg0 = popSTACK();
   processFPTYPE(FONTENUMPROCW,fontenumprocw,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg);
   begin_system_call();
@@ -279,7 +281,7 @@ DEFUN( GDI:EnumFontsA, hdc lpcstr fontenumproca lparam)
   arg0 = popSTACK();
   processFPTYPE(FONTENUMPROCA,fontenumproca,arg0);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     if(!fpointerp(arg))invalid_argument(arg);
@@ -311,7 +313,7 @@ DEFUN( GDI:EnumFontsW, hdc lpcwstr fontenumprocw lparam)
   lparam = I_to_sint32(check_sint(popSTACK()));
   processFPTYPE(FONTENUMPROCW,fontenumprocw,popSTACK());
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg);
   begin_system_call();
@@ -442,41 +444,40 @@ DEFUN( GDI:EnumObjects, hdc int0 gobjenumproc lparam)
 }
 
 // untested - was never called
+DEFUN( GDI:GetAspectRatioFilterEx, hdc)
 /** 
  * Retrieve the setting for the current aspect-ratio filter.
  * The aspect ratio is the ratio formed by the width and height 
  * of a pixel on a specified device.
- * Returns lpAspectRatio [out]
+ * Returns AspectRatio.cx and cy
  */
-DEFUN( GDI:GetAspectRatioFilterEx, hdc)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
-  SIZE* lpsize = alloca(sizeof(SIZE));
+  SIZE size;
   object arg0;
   getHDC(hdc,arg);
-
   begin_system_call();
-  bool0 = GetAspectRatioFilterEx(hdc,lpsize);
+  bool0 = GetAspectRatioFilterEx(hdc,&size);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetAspectRatioFilterEx");
   }
   else
   {
-    VALUES1(outputLPSIZE(lpsize));
+    VALUES2(uint32_to_I(size.cx),uint32_to_I(size.cy));
   }
   return;
 }
 
 // untested - was never called
+DEFUN( GDI:GetBitmapBits, hbitmap long0 pvoid)
 /** 
  * Returns: Pointer to a buffer to receive the bitmap bits 
    and the number of copied bits. The bits are stored as an 
    array of byte values.
  */
-DEFUN( GDI:GetBitmapBits, hbitmap long0 pvoid)
 {
   object arg;
   LONG long1;
@@ -513,49 +514,45 @@ DEFUN( GDI:GetBitmapDimensionEx, hbitmap)
   object arg;
   BOOL bool0;
   HBITMAP hbitmap;
-  SIZE lpsize;
+  SIZE size;
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
   hbitmap = TheFpointer(arg)->fp_pointer;
   begin_system_call();
-  bool0 = GetBitmapDimensionEx(hbitmap,&lpsize);
+  bool0 = GetBitmapDimensionEx(hbitmap,&size);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetBitmapDimensionEx");
   }
   else
   {
-    pushSTACK( uint32_to_I(lpsize.cy));
-    value2 = uint32_to_I(lpsize.cx);
-    value3 = popSTACK();
-    value1 = T;
-    mv_count=3;
+    VALUES2(uint32_to_I(size.cx),uint32_to_I(size.cy));
   }
   return;
 }
 // untested - was never called
-DEFUN( GDI:GetBoundsRect, hdc flags)
+DEFUN( GDI:GetBoundsRect, hdc lprect flags)
 {
   object arg;
   UINT ret;
   HDC hdc;
-  RECT* lprect = alloca(sizeof(RECT));
+  RECT rect;
   object arg0;
   UINT flags;
   flags = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_named_argument(arg, "hdc");
-  hdc = TheFpointer(arg)->fp_pointer;
+  arg0 = popSTACK();
+  processRECT(&rect,arg0);
+  getHDC(hdc,arg);
 
   begin_system_call();
-  ret = GetBoundsRect(hdc,lprect,flags);
+  ret = GetBoundsRect(hdc,&rect,flags);
   end_system_call();
   if(!ret){
     do_GDI_ERROR("GetBoundsRect");
   }
   else
   {
-    value1 = outputRECT(lprect);
+    value1 = outputRECT(&rect,arg0);
     value2 = uint32_to_I(ret);
     mv_count=2;
   }
@@ -568,45 +565,44 @@ DEFUN( GDI:GetBrushOrgEx, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  POINT* lppoint = alloca(sizeof(POINT));
-  object arg0;
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_named_argument(arg, "hdc");
-  hdc = TheFpointer(arg)->fp_pointer;
-
+  POINT point;
+  /*object arg0;
+  arg0 = popSTACK();
+  processPOINT(&point,arg0);*/
+  getHDC(hdc,arg);
   begin_system_call();
-  bool0 = GetBrushOrgEx(hdc,lppoint);
+  bool0 = GetBrushOrgEx(hdc,&point);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetBrushOrgEx");
   }
   else
   {
-    VALUES1(outputPOINT(lppoint));
+    VALUES2(fixnum(point.x), fixnum(point.y));
+    //VALUES1(outputPOINT(&point, arg0));
   }
   return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
-DEFUN( GDI:GetCharABCWidthsA, hdc iFirstChar iLastChar lpabc)
+DEFUN( GDI:GetCharABCWidthsA, hdc iFirstChar iLastChar lpABC)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
   UINT iFirstChar,iLastChar;
-  ABC* lpabc = alloca(sizeof(ABC));
+  ABC* lpABC = alloca(sizeof(ABC));
   object arg0;
   arg0 = popSTACK();
-  if(!fpointerp(arg0))invalid_argument(arg0);
+  if(!fpointerp(arg0))invalid_named_argument(arg0,"lpABC");
+  lpABC = (ABC*)TheFpointer(arg0)->fp_pointer;
   //processABC(lpabc,arg0);
   iLastChar = I_to_uint32(check_uint(popSTACK()));
   iFirstChar = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg))invalid_named_argument(arg, "hdc");
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
 
   begin_system_call();
-  bool0 = GetCharABCWidthsA(hdc,iFirstChar,iLastChar,lpabc);
+  bool0 = GetCharABCWidthsA(hdc,iFirstChar,iLastChar,lpABC);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetCharABCWidthsA");
@@ -629,12 +625,11 @@ DEFUN( GDI:GetCharABCWidthsFloatA, hdc iFirstChar iLastChar lpabcfloat)
   object arg0;
   arg0 = popSTACK();
   if(!fpointerp(arg0))invalid_named_argument(arg0, "lpabcfloat");
+  lpabcfloat = (ABCFLOAT*)TheFpointer(arg0)->fp_pointer;
   //processABCFLOAT(lpabcfloat,arg0);
   iLastChar = I_to_uint32(check_uint(popSTACK()));
   iFirstChar = I_to_uint32(check_uint(popSTACK()));
-  arg = popSTACK();
-  if(!fpointerp(arg0))invalid_named_argument(arg0, "hdc");
-  hdc = TheFpointer(arg)->fp_pointer;
+  getHDC(hdc,arg);
 
   begin_system_call();
   bool0 = GetCharABCWidthsFloatA(hdc,iFirstChar,iLastChar,lpabcfloat);
@@ -660,6 +655,8 @@ DEFUN( GDI:GetCharABCWidthsFloatW, hdc iFirstChar iLastChar lpabcfloat)
   object arg0;
 
   arg0 = popSTACK();
+  if(!fpointerp(arg0))invalid_named_argument(arg0, "lpabcfloat");
+  lpabcfloat = (ABCFLOAT*)TheFpointer(arg0)->fp_pointer;
   //processABCFLOAT(lpabcfloat,arg0);
   iLastChar = I_to_uint32(check_uint(popSTACK()));
   iFirstChar = I_to_uint32(check_uint(popSTACK()));
@@ -689,6 +686,8 @@ DEFUN( GDI:GetCharABCWidthsW, hdc iFirstChar iLastChar lpabc)
   object arg0;
 
   arg0 = popSTACK();
+  if(!fpointerp(arg0))invalid_named_argument(arg0, "lpabc");
+  lpabc = (ABC*)TheFpointer(arg0)->fp_pointer;
   //processABC(lpabc,arg0);
   iLastChar = I_to_uint32(check_uint(popSTACK()));
   iFirstChar = I_to_uint32(check_uint(popSTACK()));
@@ -820,26 +819,26 @@ DEFUN( GDI:GetCharWidthW, hdc uint uint0 lpint)
 }
 
 // untested - was never called
-// removed lprect
-DEFUN( GDI:GetClientRect, hwnd)
+DEFUN( GDI:GetClientRect, hwnd lprect)
 {
-  object arg;
+  object arg, arg0;
   BOOL bool0;
   HWND hwnd;
-  RECT* lprect;
+  RECT rect;
+  arg0 = popSTACK();
+  processRECT(&rect,arg0);
   arg = popSTACK();
-  if(!fpointerp(arg))invalid_argument(arg);
+  if(!fpointerp(arg))invalid_named_argument(arg,"hwnd");
   hwnd = TheFpointer(arg)->fp_pointer;
-
   begin_call();
-  bool0 = GetClientRect(hwnd,lprect);
+  bool0 = GetClientRect(hwnd,&rect);
   end_call();
   if(!bool0){
     do_GDI_ERROR("GetClientRect");
   }
   else
   {
-    VALUES1(outputRECT(lprect));
+      VALUES1(outputRECT(&rect, arg0));
   }
   return;
 }
@@ -864,7 +863,7 @@ DEFUN( GDI:GetClipBox, hdc lprect)
   }
   else
   {
-    value1 = outputRECT(lprect);
+    value1 = outputRECT(lprect,arg0);
     value2 = sint32_to_I(int0);
     mv_count=2;
   }
@@ -872,12 +871,12 @@ DEFUN( GDI:GetClipBox, hdc lprect)
 }
 // untested - was never called
 // removed lpcoloradjustment
-DEFUN( GDI:GetColorAdjustment, hdc )
+DEFUN( GDI:GetColorAdjustment, hdc lpcoloradjustment)
 {
   BOOL bool0;
   HDC hdc;
   COLORADJUSTMENT coloradjustment;
-  object arg;
+  object arg,arg0;
 
   getHDC(hdc,arg);
   begin_system_call();
@@ -888,7 +887,7 @@ DEFUN( GDI:GetColorAdjustment, hdc )
   }
   else
   {
-    VALUES1(outputCOLORADJUSTMENT(&coloradjustment));
+    VALUES1(outputCOLORADJUSTMENT(&coloradjustment,arg0));
   }
   return;
 }
@@ -898,10 +897,10 @@ DEFUN( GDI:GetCurrentPositionEx, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  POINT* lppoint = alloca(sizeof(POINT));
+  POINT point;
   getHDC(hdc,arg);
   begin_system_call();
-  bool0 = GetCurrentPositionEx(hdc,lppoint);
+  bool0 = GetCurrentPositionEx(hdc,&point);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetCurrentPositionEx");
@@ -909,17 +908,19 @@ DEFUN( GDI:GetCurrentPositionEx, hdc)
   }
   else
   {
-    VALUES1(outputPOINT(lppoint));
+    VALUES2(uint32_to_I(point.x),uint32_to_I(point.y));
   }
   return;
 }
 // untested - was never called
-DEFUN( GDI:GetDCOrgEx, hdc)
+DEFUN( GDI:GetDCOrgEx, hdc lppoint)
 {
-  object arg;
+  object arg,arg0;
   BOOL bool0;
   HDC hdc;
   POINT* lppoint = alloca(sizeof(POINT));
+  arg0 = popSTACK();
+  processPOINT(lppoint,arg0);
   getHDC(hdc,arg);
   begin_system_call();
   bool0 = GetDCOrgEx(hdc,lppoint);
@@ -930,12 +931,14 @@ DEFUN( GDI:GetDCOrgEx, hdc)
   }
   else
   {
-    VALUES1(outputPOINT(lppoint));
+    //VALUES2(lppoint->x, lppoint->y);
+    VALUES1(outputPOINT(lppoint,arg0));
   }
   return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
+// TODO: output RGBQUAD_C
 DEFUN( GDI:GetDIBColorTable, hdc uint uint0 rgbquad_p)
 {
   object arg;
@@ -961,7 +964,7 @@ DEFUN( GDI:GetDIBColorTable, hdc uint uint0 rgbquad_p)
   }
   else
   {
-    VALUES2(allocate_fpointer(rgbquad_p),
+    VALUES2(arg0,
             uint32_to_I(uint1));
   }
   return;
@@ -998,7 +1001,7 @@ DEFUN( GDI:GetEnhMetaFileA, lpcstr)
   HENHMETAFILE henhmetafile;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     henhmetafile = GetEnhMetaFileA(lpcstr);
@@ -1024,7 +1027,7 @@ DEFUN( GDI:GetEnhMetaFileDescriptionA, henhmetafile uint lpstr)
   UINT uint;
   LPSTR lpstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpstr, {
     uint = I_to_uint32(check_uint(popSTACK()));
     arg = popSTACK();
@@ -1056,7 +1059,7 @@ DEFUN( GDI:GetEnhMetaFileDescriptionW, henhmetafile uint lpwstr)
   UINT uint;
   LPWSTR lpwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpwstr = WIDECHAR(arg,encoding);
   uint = I_to_uint32(check_uint(popSTACK()));
   arg = popSTACK();
@@ -1183,7 +1186,7 @@ DEFUN( GDI:GetEnhMetaFileW, lpcwstr)
   HENHMETAFILE henhmetafile;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   henhmetafile = GetEnhMetaFileW(lpcwstr);
@@ -1242,7 +1245,7 @@ DEFUN( GDI:GetICMProfileA, hdc lpdword lpstr)
   LPDWORD lpdword;
   LPSTR lpstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpstr, {
     arg = popSTACK();
     if(!fpointerp(arg))invalid_argument(arg);
@@ -1278,7 +1281,7 @@ DEFUN( GDI:GetICMProfileW, hdc lpdword lpwstr)
   LPDWORD lpdword;
   LPWSTR lpwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpwstr = WIDECHAR(arg,encoding);
   arg = popSTACK();
   if(!fpointerp(arg))invalid_argument(arg);
@@ -1425,7 +1428,7 @@ DEFUN( GDI:GetMetaFileA, lpcstr)
   HMETAFILE hmetafile;
   LPCSTR lpcstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     begin_system_call();
     hmetafile = GetMetaFileA(lpcstr);
@@ -1480,7 +1483,7 @@ DEFUN( GDI:GetMetaFileW, lpcwstr)
   HMETAFILE hmetafile;
   LPCWSTR lpcwstr;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   begin_system_call();
   hmetafile = GetMetaFileW(lpcwstr);
@@ -1829,7 +1832,7 @@ DEFUN( GDI:GetTextExtentPoint32A, hdc lpcstr)
   LPCSTR lpcstr;
   SIZE lpsize;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     getHDC(hdc,arg0);
     begin_system_call();
@@ -1853,21 +1856,21 @@ DEFUN( GDI:GetTextExtentPoint32W, hdc lpcwstr)
   BOOL bool0;
   HDC hdc;
   LPCWSTR lpcwstr;
-  SIZE lpsize;
+  SIZE size;
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg0);
 
   begin_system_call();
-  bool0 = GetTextExtentPoint32W(hdc,lpcwstr,Sstring_length(arg),&lpsize);
+  bool0 = GetTextExtentPoint32W(hdc,lpcwstr,Sstring_length(arg),&size);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetTextExtentPoint32W");
   }
   else
   {
-    VALUES2(uint32_to_I(lpsize.cx), uint32_to_I(lpsize.cy));
+    VALUES2(uint32_to_I(size.cx), uint32_to_I(size.cy));
   }
   return;
 }
@@ -1887,7 +1890,7 @@ DEFUN( GDI:GetTextExtentPointA, hdc lpcstr int0 lpsize)
   processSIZE(lpsize,arg0);
   int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
   getHDC(hdc,arg);
 
@@ -1918,7 +1921,7 @@ DEFUN( GDI:GetTextExtentPointW, hdc lpcwstr int0 lpsize)
   processSIZE(lpsize,arg0);
   int0 = I_to_sint32(check_sint(popSTACK()));
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   lpcwstr = WIDECHAR(arg,encoding);
   getHDC(hdc,arg);
 
@@ -1994,47 +1997,47 @@ DEFUN( GDI:GetTextFaceW, hdc)
   return;
 }
 // untested - was never called
-DEFUN( GDI:GetTextMetricsA, hdc)
+DEFUN( GDI:GetTextMetricsA, hdc lptextmetrica)
 {
-  object arg;
+  object arg,arg0;
   BOOL bool0;
   HDC hdc;
-  TEXTMETRICA textmetrica;
-  object arg0 = popSTACK();
+  TEXTMETRICA *lptextmetrica = alloca(sizeof(TEXTMETRICA));
+  arg0 = popSTACK();
+  processFPTYPE(TEXTMETRICA*,lptextmetrica,arg0);
   getHDC(hdc,arg);
   begin_system_call();
-  bool0 = GetTextMetricsA(hdc,&textmetrica);
+  bool0 = GetTextMetricsA(hdc,lptextmetrica);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetTextMetricsA");
   }
   else
   {
-    VALUES1(outputTEXTMETRICA(&textmetrica));
+    VALUES1(outputTEXTMETRICA(lptextmetrica,arg0));
   }
   return;
 }
 // untested - was never called
-DEFUN( GDI:GetTextMetricsW, hdc)
+DEFUN( GDI:GetTextMetricsW, hdc lptextmetricw)
 {
-  object arg;
+  object arg,arg0;
   BOOL bool0;
   HDC hdc;
-  TEXTMETRICW textmetricw;// = alloca(sizeof(TEXTMETRICW));
-  //object arg0;
-  //arg0 = popSTACK();
-  //processTEXTMETRICW(lptextmetricw,arg0);
+  TEXTMETRICW *lptextmetricw = alloca(sizeof(TEXTMETRICW));
+  arg0 = popSTACK();
+  processFPTYPE(TEXTMETRICW*,lptextmetricw,arg0);
   getHDC(hdc,arg);
 
   begin_system_call();
-  bool0 = GetTextMetricsW(hdc,&textmetricw);
+  bool0 = GetTextMetricsW(hdc,lptextmetricw);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetTextMetricsW");
   }
   else
   {
-    VALUES1(outputTEXTMETRICW(&textmetricw));
+    VALUES1(outputTEXTMETRICW(lptextmetricw,arg0));
   }
   return;
 }
@@ -2044,22 +2047,18 @@ DEFUN( GDI:GetViewportExtEx, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  SIZE* lpsize = alloca(sizeof(SIZE));
-  //object arg0;
-  //arg0 = popSTACK();
-  //processSIZE(lpsize,arg0);
+  SIZE size;
   getHDC(hdc,arg);
 
   begin_system_call();
-  bool0 = GetViewportExtEx(hdc,lpsize);
+  bool0 = GetViewportExtEx(hdc,&size);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetViewportExtEx");
-
   }
   else
   {
-    VALUES1(outputLPSIZE(lpsize));
+    VALUES2(uint32_to_I(size.cx), uint32_to_I(size.cy));
   }
   return;
 }
@@ -2069,22 +2068,21 @@ DEFUN( GDI:GetViewportOrgEx, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  POINT* lppoint = alloca(sizeof(POINT));
+  POINT point;
   //object arg0;
   //arg0 = popSTACK();
-  //processPOINT(lppoint,arg0);
+  //processPOINT(&point,arg0);
   getHDC(hdc,arg);
 
   begin_system_call();
-  bool0 = GetViewportOrgEx(hdc,lppoint);
+  bool0 = GetViewportOrgEx(hdc,&point);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetViewportOrgEx");
-
   }
   else
   {
-    VALUES1(outputPOINT(lppoint));
+    VALUES2(fixnum(point.x), fixnum(point.y));
   }
   return;
 }
@@ -2128,14 +2126,14 @@ DEFUN( GDI:GetWindowExtEx, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  SIZE* lpsize = alloca(sizeof(SIZE));
+  SIZE size;
   //object arg0;
   //arg0 = popSTACK();
   //processSIZE(lpsize,arg0);
   getHDC(hdc,arg);
 
   begin_system_call();
-  bool0 = GetWindowExtEx(hdc,lpsize);
+  bool0 = GetWindowExtEx(hdc,&size);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetWindowExtEx");
@@ -2143,7 +2141,8 @@ DEFUN( GDI:GetWindowExtEx, hdc)
   }
   else
   {
-    VALUES1(outputLPSIZE(lpsize));
+    VALUES2(uint32_to_I(size.cx), uint32_to_I(size.cy));
+    //VALUES1(outputLPSIZE(lpsize));
   }
   return;
 }
@@ -2153,33 +2152,32 @@ DEFUN( GDI:GetWindowOrgEx, hdc)
   object arg;
   BOOL bool0;
   HDC hdc;
-  POINT* lppoint = alloca(sizeof(POINT));
-  object arg0;
+  POINT point;
   getHDC(hdc,arg);
-
   begin_system_call();
-  bool0 = GetWindowOrgEx(hdc,lppoint);
+  bool0 = GetWindowOrgEx(hdc,&point);
   end_system_call();
   if(!bool0){
     do_GDI_ERROR("GetWindowOrgEx");
   }
   else
   {
-    VALUES1(outputPOINT(lppoint));
+    VALUES2(uint32_to_I(point.x), uint32_to_I(point.y));
+    //VALUES1(outputPOINT(lppoint));
   }
   return;
 }
 // untested - was never called
 // uninspected - compiles but code was not checked
-DEFUN( GDI:GetWorldTransform, hdc)
+DEFUN( GDI:GetWorldTransform, hdc lpxform)
 {
   object arg;
   BOOL bool0;
   HDC hdc;
   XFORM* lpxform = alloca(sizeof(XFORM));
-  //object arg0;
-  //arg0 = popSTACK();
-  //processXFORM(lpxform,arg0);
+  object arg0;
+  arg0 = popSTACK();
+  processXFORM(lpxform,arg0);
   getHDC(hdc,arg);
 
   begin_system_call();
@@ -2190,7 +2188,7 @@ DEFUN( GDI:GetWorldTransform, hdc)
   }
   else
   {
-    VALUES1(outputXFORM(lpxform));
+    VALUES1(outputXFORM(lpxform,arg0));
   }
   return;
 }
@@ -2209,7 +2207,7 @@ DEFUN( GDI:Escape, hdc int0 int1 lpcstr pvoid)
   if(!simple_bit_vector_p(Atype_8Bit,arg))invalid_argument(arg);
   pvoid = &(TheSbvector(arg)->data);
   arg = popSTACK();
-  if(!stringp(arg))invalid_argument(arg);
+  if(!stringp(arg))invalid_string_argument(arg);
   with_string_0(arg,encoding, lpcstr, {
     arg = popSTACK();
     check_sint(arg);
